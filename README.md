@@ -1,15 +1,15 @@
 # Development of an algorithm to segment the skull structure using Deep Learning
 
-## Name: Yichun Sun
+## Yichun Sun
 
 ## Tutor: Juan Ignacio Godino Llorente
 
 
-This is repository for the final Master thesis work. 
+This is the repository for the final Master thesis work. 
 
-University: Universidad Politécnica de Madrid
+Universidad Politécnica de Madrid
 
-Master program: Msc. of Science in Signal Theory and Communications
+Msc. of Science in Signal Theory and Communications
 
 ### Contents
 
