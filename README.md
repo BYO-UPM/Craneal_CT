@@ -31,4 +31,4 @@ After the updating in Dec. 2023, CUDA 12.2 doesn't support TensorFlow and Keras 
 
 (1) Use `apt update && apt install cuda-11-8` to get previous CUDA version
 
-(2) In Google Colab: Use Colab’s fallback runtime version by selecting "Use fallback runtime version" command when connected to a runtime from the Command Palette.
+(2) In Google Colab: Use Colab’s fallback runtime version by selecting "Use fallback runtime version" command when connecting to a runtime from the Command Palette.
