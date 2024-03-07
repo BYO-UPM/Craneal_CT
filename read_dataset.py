@@ -1,4 +1,8 @@
-from dataloaders.pytorch_ct_dataloader import CATScansDataset, CustomAugmentation
+from dataloaders.pytorch_ct_dataloader import (
+    CATScansDataset,
+    CustomAugmentation,
+    AugmentedDataset,
+)
 from matplotlib import pyplot as plt
 from torchvision import transforms
 from models.unet import VanillaUNet2D
@@ -57,7 +61,13 @@ from torch.utils.data import DataLoader
 train_dataset = [x for x in full_dataset if x[2] in train_patients]
 val_dataset = [x for x in full_dataset if x[2] in val_patients]
 test_dataset = [x for x in full_dataset if x[2] in test_patients]
-
+ 
+# Instantiate the CustomAugmentation class
+custom_augmentation = CustomAugmentation()
+ 
+print("Applying the augmentation to the train dataset")
+train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
+ 
 # Create the dataloaders
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
