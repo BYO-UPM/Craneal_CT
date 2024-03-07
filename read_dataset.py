@@ -2,23 +2,7 @@ from dataloaders.pytorch_ct_dataloader import CATScansDataset, CustomAugmentatio
 from matplotlib import pyplot as plt
 from torchvision import transforms
 from models.unet import VanillaUNet2D
-
 import torch
-import torch.nn as nn
-
-
-def dice_loss(pred, target, smooth=1.0):
-    pred = pred.contiguous()
-    target = target.contiguous()
-
-    intersection = (pred * target).sum(dim=2).sum(dim=2)
-
-    loss = 1 - (
-        (2.0 * intersection + smooth)
-        / (pred.sum(dim=2).sum(dim=2) + target.sum(dim=2).sum(dim=2) + smooth)
-    )
-
-    return loss.mean()
 
 
 # Path
