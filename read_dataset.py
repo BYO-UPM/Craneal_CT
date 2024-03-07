@@ -120,7 +120,7 @@ for epoch in tqdm(range(num_epochs)):
         diceloss = dice_loss(mask_prediction, masks)
         focalloss = focal_loss(mask_prediction, masks)
         loss = diceloss + focalloss
-        loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
+        # loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
         loss.backward()
         optimizer.step()
 
