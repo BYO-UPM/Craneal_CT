@@ -4,6 +4,7 @@ import random
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from PIL import Image
+import torch.nn.functional as F
 from torchvision.transforms import (
     Compose,
     RandomHorizontalFlip,
@@ -77,24 +78,26 @@ class CATScansDataset(Dataset):
 # Create data augmentation and transformation pipeline
 class CustomAugmentation:
     def __init__(self):
-        self.geometric_aug_list = [
-            # Geometrics transformations
-            RandomHorizontalFlip(p=1.0),  # Always apply horizontal flip
-            RandomVerticalFlip(p=1.0),    # Always apply vertical flip
-            RandomAffine(
-                degrees=0, scale=(0.85, 0.99)
-            ),  # Scaling only in x-axis
-            RandomAffine(degrees=(-180,180)), # rotation +-180
-        ]
-
+        self.scale_x = ScaleX()
+        self.degree = random.randint(-180, 180)
         self.noise_Gaussian_aug = GaussianNoise(mean=0, std=0.1)
         self.noise_SaltPepper_aug = SaltAndPepperNoise(salt_prob=0.01, pepper_prob=0.01)
         self.noise_Normal_aug = LaplaceNoise(mean=0, std=0.1)
         self.noise_Poisson_aug = PoissonNoise()
 
+        self.geometric_aug_list = [
+            # Geometrics transformations
+            RandomHorizontalFlip(p=1.0),  # Always apply horizontal flip
+            RandomVerticalFlip(p=1.0),    # Always apply vertical flip
+            self.scale_x,  # Scaling only in x-axis
+            RandomAffine(degrees=(self.degree,self.degree)), # Rotation
+        ]     
+
     def __call__(self, image, mask):
         augmented_images = []
         augmented_masks = []
+        augmented_images.append(image)
+        augmented_masks.append(mask)
         # Apply geometric transformations
         #image = self.geometric_augmentations(image)
         #mask = self.geometric_augmentations(mask)
@@ -121,6 +124,34 @@ class CustomAugmentation:
         # Return the list of augmented images and masks
         return augmented_images, augmented_masks
         #return image, mask
+    
+
+class ScaleX:
+    # Default scaling factor set to decrease width by 15%
+    #def __init__(self, scale_factor=0.85):
+    #    self.scale_factor = scale_factor
+
+    def __call__(self, image):
+        #scale_factor = random.uniform(*self.scale_range)
+        #_, w, h = image.size()
+        #scaled_w = int(w * 0.85)
+        #resized_img = image.resize((scaled_w, h), Image.BILINEAR)
+        #return resized_img
+
+        _, H, W = image.size()
+        scaled_W = int(W * 0.85)
+
+        # Use grid_sample for scaling
+        # Create affine matrix for scaling
+        theta = torch.tensor([
+            [0.85, 0, 0],
+            [0, 1, 0],
+        ], dtype=torch.float).unsqueeze(0)
+        
+        grid = F.affine_grid(theta, image.unsqueeze(0).size(), align_corners=False)
+        scaled_x = F.grid_sample(image.unsqueeze(0), grid, align_corners=False)
+
+        return scaled_x.squeeze(0)
 
 
 class GaussianNoise:
@@ -200,24 +231,18 @@ class AugmentedDataset(torch.utils.data.Dataset):
         return len(self.subset) * 5
  
     def __getitem__(self, index):
-        # Index for original image
-        original_index = index // 5
-        # image augmentation
-        augmentation_index = index % 5
-
-        original_img, mask_img, patient_id, slice_number = self.subset[index]
+        # Calculate original index and augmentation index
+        original_idx = index // 5
+        aug_idx = index % 5
+        original_img, mask_img, patient_id, slice_number = self.subset[original_idx]
         
         if self.augmentation:
-            # image and mask lists augmentation
-            augmented_images, augmented_masks = self.augmentation(original_img, mask_img)
-            # based on augmentation_index selecting pair of image and mask
-            augmented_img = augmented_images[augmentation_index - 1]
-            augmented_mask = augmented_masks[augmentation_index - 1]
+            transformed_images, transformed_masks = self.augmentation(original_img,
+                                                                      mask_img)
+            original_img = transformed_images[aug_idx]
+            mask_img = transformed_masks[aug_idx]
         else:
-            # no augmentation
-            augmented_img = original_img
-            augmented_mask = mask_img
-        return augmented_img, augmented_mask, patient_id, slice_number
- 
-    def __len__(self):
-        return len(self.subset)
+            original_img = original_img  # No transformation
+       
+        return original_img, mask_img, patient_id, slice_number
+

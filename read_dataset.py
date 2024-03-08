@@ -180,5 +180,18 @@ for i, data in enumerate(test_loader):
     dice = (2 * intersection) / (union + 1e-8)
     dice_score.append(dice)
 
+    # Save the prediction results
+    #fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    #axes[0].imshow(inputs, cmap='gray')
+    #axes[0].set_title('Input Image')
+    #axes[1].imshow(masks, cmap='gray')
+    #axes[1].set_title('True Mask')
+    #axes[2].imshow(mask_prediction, cmap='gray')
+    #axes[2].set_title('Predicted Mask')
+    #plt.savefig('Prediction_Results_augmentation/Unet2D_vanilla_aug_slice_{sample_idx}.png')
+    #plt.close()
+
+
 print(f"Mean DICE score: {np.mean(dice_score)}")
 print(f"Std DICE score: {np.std(dice_score)}")
+    
