@@ -24,7 +24,7 @@ class CATScansDataset(Dataset):
         self.transform = transform
         self.augmentations = augmentations
         self.samples = []
-        self.patient_id = []
+        self.patient_id = [] 
 
         # Walk through the root directory and create a list of (image, mask) pairs
         for patient_id in os.listdir(root_dir):
