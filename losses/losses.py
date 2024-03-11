@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 # Helper function to enable loss function to be flexibly used for
@@ -18,6 +19,23 @@ def identify_axis(shape):
     # Exception - Unknown
     else:
         raise ValueError("Metric: Shape of tensor is neither 2D or 3D.")
+
+
+class FocalLossForProbabilities(torch.nn.Module):
+    def __init__(self, gamma=2.0, alpha=0.25):
+        super(FocalLossForProbabilities, self).__init__()
+        self.gamma = gamma
+        self.alpha = alpha
+
+    def forward(self, probabilities, targets):
+        # Ensure the probabilities are clipped to prevent error in log
+        epsilon = 1e-6
+        probabilities = torch.clamp(probabilities, epsilon, 1. - epsilon)
+
+        # Calculate the focal loss
+        pt = torch.where(targets == 1, probabilities, 1 - probabilities)
+        loss = -self.alpha * (1 - pt) ** self.gamma * torch.log(pt)
+        return loss.mean()
 
 
 class SymmetricFocalLoss(nn.Module):

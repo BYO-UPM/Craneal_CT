@@ -5,7 +5,7 @@ from dataloaders.pytorch_ct_dataloader import (
 )
 from matplotlib import pyplot as plt
 from torchvision import transforms
-from models.unet import VanillaUNet2D
+from models.unet2d_vanilla import VanillaUNet2D
 from torch.utils.data import DataLoader
 import numpy as np
 import torch
