@@ -1,4 +1,4 @@
-from dataloaders.pytorch_ct_dataloader import (
+from Codes_pytorch.dataloaders.ct_aug_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
