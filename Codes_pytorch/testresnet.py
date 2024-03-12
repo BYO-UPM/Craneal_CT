@@ -63,7 +63,6 @@ print(f"Number of unique patients: {len(unique_patient_id)}")
 # Set-up for cross-validation
 cv_DICE = []
 
-# 7 patients to train, 1 to val and 1 to test
 for cv_indx in range(len(unique_patient_id)):
     #random.seed(42)
     #random.shuffle(unique_patient_id)
@@ -110,89 +109,15 @@ for cv_indx in range(len(unique_patient_id)):
         in_channels=1,
     )
 
-    # Training loop
 
-    # Loss and optimizer
-    # Dice loss and focal loss
-    dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
-    focal_loss = FocalLossForProbabilities()
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
-
-    # Training loop
-    num_epochs = 40
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
-    train_loss_list = []
-    val_loss_list = []
-    for epoch in tqdm(range(num_epochs)):
-        model.train()
-        running_loss = 0.0
-        for i, data in enumerate(train_loader):
-            inputs, masks, _, _ = data
-            inputs, masks = inputs.to(device), masks.to(device)
-
-            # Zero the parameter gradients
-            optimizer.zero_grad()
-
-            # Forward + backward + optimize
-            mask_prediction = model(inputs)
-            diceloss = dice_loss(mask_prediction, masks)
-            focalloss = focal_loss(mask_prediction, masks)
-            loss = diceloss + focalloss
-            # loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
-            loss.backward()
-            optimizer.step()
-
-            # Print statistics
-            running_loss += loss.item()
-        print(f"Epoch {epoch + 1}, loss: {running_loss / len(train_loader)}")
-        train_loss_list.append(running_loss / len(train_loader))
-
-        # validation loop
-        model.eval()
-        running_loss = 0.0
-        for i, data in enumerate(val_loader):
-            inputs, masks, _, _ = data
-            inputs, masks = inputs.to(device), masks.to(device)
-
-            # Forward
-            mask_prediction = model(inputs)
-            diceloss = dice_loss(mask_prediction, masks)
-            focalloss = focal_loss(mask_prediction, masks)
-            loss = diceloss + focalloss
-            # loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
-
-            # Print statistics
-            running_loss += loss.item()
-
-        print(f"Validation loss: {running_loss / len(val_loader)}")
-        val_loss_list.append(running_loss / len(val_loader))
-
-        # Save the best model
-        if epoch == 0:
-            best_loss = running_loss / len(val_loader)
-        else:
-            if running_loss / len(val_loader) < best_loss:
-                best_loss = running_loss / len(val_loader)
-                print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"resnet2D_aug_cv_{cv_indx}.pth"
-                torch.save(model.state_dict(), modelname)
-    
-    # Save information for training and validation losses
-    # New csv file
-    filename = f"loss_resnet2D_aug_cv_{cv_indx}.csv"
-    with open(filename, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])
-        for train_val in zip(train_loss_list, val_loss_list):
-            writer.writerow(list(train_val[0:1]) + [''] * 10 + list(train_val[1:]))
-
-
     # Evaluate the model in test with DICE score
  
     # Load the best model
+    modelname = f"resnet2D_aug_cv_{cv_indx}.pth"
     model.load_state_dict(torch.load(modelname))
     model.eval()
 
@@ -205,7 +130,7 @@ for cv_indx in range(len(unique_patient_id)):
 
         # Forward
         mask_prediction = model(inputs)
-        mask_prediction = torch.sigmoid(mask_prediction)
+        #mask_prediction = torch.sigmoid(mask_prediction)
         mask_prediction = mask_prediction.detach().cpu().numpy()
         masks = masks.detach().cpu().numpy()
 
