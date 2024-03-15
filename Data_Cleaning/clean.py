@@ -8,6 +8,9 @@ def name_id(ds, new_patient_id, new_patient_name):
     print(f"Modified patient ID to: {new_patient_id}")
     print(f"Modified patient name to: {new_patient_name}")
 
+    if 'OtherPatientNames' in ds:
+        ds.OtherPatientNames = ''
+
 
 # Only keep the year of the birth date
 def birthday(ds):
@@ -24,15 +27,39 @@ def birthday(ds):
         print("No birth date tag found, nothing changed.")
 
 
-# Change the hospital name and remove the department, referring physician
+# Change the hospital name and remove the department, referring physician, acquisition date and time
 def hospital(ds, new_hospital_name):
     if 'InstitutionName' in ds:
         ds.InstitutionName = new_hospital_name
-        ds.InstitutionalDepartmentName = ''
-        ds.ReferringPhysicianName = ''
         print(f"Modified hospital name to: {new_hospital_name}")
     else:
-        print("No hospital name tag found, nothing changed.");
+        print("No hospital name tag found, nothing changed.")
+
+    if 'InstitutionalDepartmentName' in ds:
+        ds.InstitutionalDepartmentName = ''
+    
+    if 'ReferringPhysicianName' in ds:
+        ds.ReferringPhysicianName = ''
+
+
+def remove_date_time(ds):
+    # Tags for time and date
+    date_time_tags = [
+        'AcquisitionDate', 'AcquisitionTime',
+        'ContentDate', 'ContentTime',
+        'StudyDate', 'StudyTime'
+        'ScheduledProcedureStepStartDate', 'ScheduledProcedureStepStartTime',
+        'ScheduledProcedureStepEndDate', 'ScheduledProcedureStepEndTime',
+        'PerformedProcedureStepStartDate', 'PerformedProcedureStepStartTime',
+        'PerformedProcedureStepEndDate', 'PerformedProcedureStepEndTime'
+    ]
+            
+    # Setting tags in the specified range to a blank space if they exist
+    for tag in date_time_tags:
+        if tag in ds:
+            ds.data_element(tag).value = ''
+
+    print("All date and time removed.")
     
 
 # New info.
@@ -50,4 +77,5 @@ for filename in os.listdir(dicom_path):
         name_id(ds, new_patient_id, new_patient_name)
         birthday(ds)
         hospital(ds, new_hospital_id)
+        remove_date_time(ds)
         ds.save_as(os.path.join(save_path, filename))
