@@ -7,3 +7,5 @@ resnet2D_aug_cv_1.pth
 resnet2D_aug_cv_2.pth
 resnet2D_window_cv_0.pth
 window_resnet2D_output.log
+resnet2D_aug_cv_3.pth
+loss_resnet2D_aug_cv_2.csv

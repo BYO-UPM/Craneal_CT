@@ -24,11 +24,12 @@ def birthday(ds):
         print("No birth date tag found, nothing changed.")
 
 
-# Change the hospital name and remove the department name
+# Change the hospital name and remove the department, referring physician
 def hospital(ds, new_hospital_name):
     if 'InstitutionName' in ds:
         ds.InstitutionName = new_hospital_name
         ds.InstitutionalDepartmentName = ''
+        ds.ReferringPhysicianName = ''
         print(f"Modified hospital name to: {new_hospital_name}")
     else:
         print("No hospital name tag found, nothing changed.");
