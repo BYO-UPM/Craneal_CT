@@ -1,13 +1,13 @@
-#from dataloaders.ct_aug_dataloader import (
-from dataloaders.ct_window_dataloader import (
+from dataloaders.ct_aug_dataloader import (
+#from dataloaders.ct_window_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
 )
 from matplotlib import pyplot as plt
 from torchvision import transforms
-from models.unet2d_vanilla import VanillaUNet2D
 from torch.utils.data import DataLoader
+from losses.losses import FocalLossForProbabilities
 import numpy as np
 import torch
 import torch.nn as nn
@@ -21,16 +21,11 @@ import csv
 # Path
 path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
 
-# # Instantiate the CustomAugmentation class
-# custom_augmentation = CustomAugmentation()
-
-# Common transformation, normalize between 0 and 1
-transform = transforms.Compose(
-    [
-        transforms.ToTensor(),
-        transforms.Normalize(mean=0, std=(1 / 255)),
-    ]
-)
+# Define a transformation pipeline including the preprocessing function
+transform = transforms.Compose([
+    transforms.ToTensor(),  # Converts PIL Image to tensor and scales to [0, 1]
+    transforms.Normalize(mean=0, std=(1 / 255)),
+])
 
 # Initialize CATScansDataset with the root directory and transformations
 full_dataset = CATScansDataset(root_dir=path, transform=transform)
@@ -84,24 +79,34 @@ for cv_indx in range(len(unique_patient_id)):
     train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
+
+    ENCODER = 'resnet50'
+    ENCODER_WEIGHTS = 'imagenet'
+    ACTIVATION = 'sigmoid'
 
     # Instantiate the model
-    model = VanillaUNet2D(1, 512, 512)
+    model = smp.Unet(
+        encoder_name=ENCODER, 
+        encoder_weights=ENCODER_WEIGHTS, 
+        classes=1, 
+        activation=ACTIVATION,
+        in_channels=1,
+    )
 
     # Training loop
 
     # Loss and optimizer
     # Dice loss and focal loss
-    dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=True)
-    focal_loss = smp.losses.FocalLoss(mode="binary")
+    dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
+    focal_loss = FocalLossForProbabilities()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Training loop
     num_epochs = 40
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
@@ -158,12 +163,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"vanilla2D_window_cv_{cv_indx}.pth"
+                modelname = f"resnet2D_aug_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"loss_vanilla2D_window_cv_{cv_indx}.csv"
+    filename = f"loss_resnet2D_aug_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])
@@ -186,7 +191,7 @@ for cv_indx in range(len(unique_patient_id)):
 
         # Forward
         mask_prediction = model(inputs)
-        mask_prediction = torch.sigmoid(mask_prediction)
+        #mask_prediction = torch.sigmoid(mask_prediction)
         mask_prediction = mask_prediction.detach().cpu().numpy()
         masks = masks.detach().cpu().numpy()
 

@@ -22,25 +22,10 @@ import csv
 # Path
 path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
 
-# Custom transform to convert a grayscale image to RGB
-class GrayscaleToRGBTransform:
-    def __call__(self, x):
-        # x is a grayscale image with shape [1, H, W]
-        # We repeat the grayscale channel 3 times to make it RGB
-        return x.repeat(3, 1, 1)
-
-# Common transformation, normalize between 0 and 1
-preprocess_input = get_preprocessing_fn('vgg16', pretrained='imagenet')  
-
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
-    #transforms.ToTensor(),  # Converts PIL Image or numpy.ndarray to tensor
-    #transforms.Lambda(lambda x: x.mul(255).byte()),  # Scale to [0, 255] and convert to uint8
-    #GrayscaleToRGBTransform(),
     transforms.ToTensor(),  # Converts PIL Image to tensor and scales to [0, 1]
     transforms.Normalize(mean=0, std=(1 / 255)),
-    #transforms.Lambda(lambda x: preprocess_input(x.transpose(1, 2, 0).numpy())),  # Apply preprocessing
-    #transforms.Lambda(lambda x: torch.from_numpy(x.transpose(2, 0, 1).float())),  # Back to tensor
 ])
 
 # Initialize CATScansDataset with the root directory and transformations
@@ -59,6 +44,7 @@ full_dataset = CATScansDataset(root_dir=path, transform=transform)
 # Patient id list
 patient_id = full_dataset.patient_id
 unique_patient_id = list(set(patient_id))
+unique_patient_id.sort()
 print(f"Number of unique patients: {len(unique_patient_id)}")
 
 # Set-up for cross-validation
@@ -98,7 +84,7 @@ for cv_indx in range(len(unique_patient_id)):
     val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 
-    ENCODER = 'vgg16'
+    ENCODER = 'resnet50'
     ENCODER_WEIGHTS = 'imagenet'
     ACTIVATION = 'sigmoid'
 
@@ -121,7 +107,7 @@ for cv_indx in range(len(unique_patient_id)):
 
     # Training loop
     num_epochs = 40
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
@@ -178,12 +164,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"vgg2D_window_cv_{cv_indx}.pth"
+                modelname = f"resnet2D_window_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"loss_vgg2D_window_cv_{cv_indx}.csv"
+    filename = f"loss_resnet2D_window_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])

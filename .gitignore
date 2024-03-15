@@ -1,1 +1,9 @@
 /**/__pycache__
+aug_resnet2D_output.log
+loss_resnet2D_aug_cv_0.csv
+loss_resnet2D_aug_cv_1.csv
+resnet2D_aug_cv_0.pth
+resnet2D_aug_cv_1.pth
+resnet2D_aug_cv_2.pth
+resnet2D_window_cv_0.pth
+window_resnet2D_output.log

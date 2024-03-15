@@ -27,7 +27,7 @@ class CATScansDataset(Dataset):
         self.patient_id = [] 
 
         # Walk through the root directory and create a list of (image, mask) pairs
-        for patient_id in os.listdir(root_dir):
+        for patient_id in sorted(os.listdir(root_dir)):
             patient_dir = os.path.join(root_dir, patient_id)
 
             original_dir = os.path.join(patient_dir, "Original")

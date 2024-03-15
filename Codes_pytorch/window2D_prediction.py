@@ -43,6 +43,7 @@ full_dataset = CATScansDataset(root_dir=path, transform=transform)
 # Patient id list
 patient_id = full_dataset.patient_id
 unique_patient_id = list(set(patient_id))
+unique_patient_id.sort()
 print(f"Number of unique patients: {len(unique_patient_id)}")
 
 # Set-up for cross-validation
