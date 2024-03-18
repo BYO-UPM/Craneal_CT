@@ -12,18 +12,28 @@ def name_id(ds, new_patient_id, new_patient_name):
         ds.OtherPatientNames = ''
 
 
-# Only keep the year of the birth date
-def birthday(ds):
-    if 'PatientBirthDate' in ds:
+# Only keep the age of patient, if the birth date is not available, remove it
+def ageCalculation(ds):
+    if 'PatientBirthDate' in ds and ds['PatientBirthDate'].value.strip():
         birth_date = ds.PatientBirthDate
+        birthyear = birth_date[:4]
+        birthyear = int(birthyear)
         # Get the year
-        if birth_date and len(birth_date) >= 4:
-            new_birth_date = birth_date[:4]
-            ds.PatientBirthDate = new_birth_date
-            print(f"Modified birth date to: {new_birth_date}")
+        if 1900 < birthyear < 2100:
+            if 'StudyDate' in ds:
+                study_date = ds.StudyDate
+                studyyear = study_date[:4]
+                studyyear = int(studyyear)
+                age = studyyear - birthyear
+                print(f"Modified birth date to AGE: {age}")
+                ds.PatientAge = str(age)
+                ds.PatientBirthDate = ''
         else:
-            print("Birth date is empty or too short, keeping original.")
+            ds.PatientBirthDate = ''
+            ds.PatientAge = ''
+            print("Birth date is empty or wrong, delete it.")
     else:
+        ds.PatientAge = ''
         print("No birth date tag found, nothing changed.")
 
 
@@ -40,6 +50,12 @@ def hospital(ds, new_hospital_name):
     
     if 'ReferringPhysicianName' in ds:
         ds.ReferringPhysicianName = ''
+    
+    if 'PhysiciansOfRecord' in ds:
+        ds.PhysiciansOfRecord = ''
+    
+    if 'RequestingPhysician' in ds:
+        ds.RequestingPhysician = ''
 
 
 def remove_date_time(ds):
@@ -47,11 +63,11 @@ def remove_date_time(ds):
     date_time_tags = [
         'AcquisitionDate', 'AcquisitionTime',
         'ContentDate', 'ContentTime',
-        'StudyDate', 'StudyTime'
+        'StudyDate', 'StudyTime', 'SeriesDate', 'SeriesTime',
         'ScheduledProcedureStepStartDate', 'ScheduledProcedureStepStartTime',
         'ScheduledProcedureStepEndDate', 'ScheduledProcedureStepEndTime',
         'PerformedProcedureStepStartDate', 'PerformedProcedureStepStartTime',
-        'PerformedProcedureStepEndDate', 'PerformedProcedureStepEndTime'
+        'PerformedProcedureStepEndDate', 'PerformedProcedureStepEndTime',
     ]
             
     # Setting tags in the specified range to a blank space if they exist
@@ -63,19 +79,19 @@ def remove_date_time(ds):
     
 
 # New info.
-dicom_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/TAC Bueno/VCO"
-save_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/CleanCT"
-new_patient_id = 'P01'
-new_patient_name = 'P01'
-new_hospital_id = 'A'
+dicom_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/TAC Fallo/Tipo 2/NPP"
+save_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results"
+new_patient_id = 'P40'
+new_patient_name = 'P40'
+new_hospital_id = 'Hospital D'
 
 # Loop through all the files in the folder
 for filename in os.listdir(dicom_path):
-    if filename.lower().endswith('.dcm'):
+    if filename.lower().endswith('.dcm') or '.' not in filename:
         file_path = os.path.join(dicom_path, filename)
         ds = pydicom.dcmread(file_path)
         name_id(ds, new_patient_id, new_patient_name)
-        birthday(ds)
+        ageCalculation(ds)
         hospital(ds, new_hospital_id)
         remove_date_time(ds)
         ds.save_as(os.path.join(save_path, filename))

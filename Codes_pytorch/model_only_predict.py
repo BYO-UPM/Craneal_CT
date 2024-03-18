@@ -10,16 +10,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import segmentation_models_pytorch as smp
-from segmentation_models_pytorch.encoders import get_preprocessing_fn
 from tqdm import tqdm
 import csv
 #from losses.losses import AsymmetricUnifiedFocalLoss
 
 # Path
 path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
-
-# Common transformation, normalize between 0 and 1
-preprocess_input = get_preprocessing_fn('resnet50', pretrained='imagenet')  
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -58,7 +54,7 @@ for cv_indx in range(len(unique_patient_id)):
     
     test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 
-    ENCODER = 'resnet50'
+    ENCODER = 'vgg16'
     ENCODER_WEIGHTS = 'imagenet'
     ACTIVATION = 'sigmoid'
 
@@ -79,7 +75,7 @@ for cv_indx in range(len(unique_patient_id)):
     # Evaluate the model in test with DICE score
  
     # Load the best model
-    modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Model2D_Augmentation/resnet50_aug/resnet2D_aug_cv_{cv_indx}.pth"
+    modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Model2D_Augmentation/vgg2D_aug/vgg2D_aug_cv_{cv_indx}.pth"
     model.load_state_dict(torch.load(modelname))
     model.eval()
 
@@ -103,6 +99,16 @@ for cv_indx in range(len(unique_patient_id)):
         union = np.sum(mask_prediction) + np.sum(masks)
         dice = (2 * intersection) / (union + 1e-8)
         dice_score.append(dice)
+
+        for j in range(16):
+            fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+            ax[0].imshow(masks[j,0,:,:], cmap="gray")
+            ax[0].set_title("Mask Manual")
+            ax[1].imshow(mask_prediction[j,0,:,:], cmap="gray")
+            ax[1].set_title("Prediction Mask")
+            resultpath = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results/vgg2D_aug_{i}_{j}.png"
+            plt.savefig(resultpath)
+            plt.close()
     
     cv_DICE.append(np.mean(dice_score))
     print(f"Mean DICE score: {np.mean(dice_score)}")
