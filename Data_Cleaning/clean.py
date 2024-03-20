@@ -68,6 +68,8 @@ def remove_date_time(ds):
         'ScheduledProcedureStepEndDate', 'ScheduledProcedureStepEndTime',
         'PerformedProcedureStepStartDate', 'PerformedProcedureStepStartTime',
         'PerformedProcedureStepEndDate', 'PerformedProcedureStepEndTime',
+        'InstitutionAddress', 'PatientAddress', 'PerformingPhysicianName',
+        'OperatorsName', 'NameOfPhysiciansReadingStudy',
     ]
             
     # Setting tags in the specified range to a blank space if they exist
@@ -79,10 +81,10 @@ def remove_date_time(ds):
     
 
 # New info.
-dicom_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/TAC Fallo/Tipo 2/NPP"
+dicom_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/P40"
 save_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results"
-new_patient_id = 'P40'
-new_patient_name = 'P40'
+new_patient_id = 'P38'
+new_patient_name = 'P38'
 new_hospital_id = 'Hospital D'
 
 # Loop through all the files in the folder

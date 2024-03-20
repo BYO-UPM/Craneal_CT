@@ -249,7 +249,7 @@ class AsymmetricUnifiedFocalLoss(nn.Module):
         clip values to prevent division by zero error
     """
 
-    def __init__(self, weight=0.5, delta=0.6, gamma=0.2, from_logits=False):
+    def __init__(self, weight=0.5, delta=0.6, gamma=0.5 , from_logits=False):
         super(AsymmetricUnifiedFocalLoss, self).__init__()
         self.weight = weight
         self.delta = delta

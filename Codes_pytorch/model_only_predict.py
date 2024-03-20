@@ -67,15 +67,14 @@ for cv_indx in range(len(unique_patient_id)):
         in_channels=1,
     )
 
-
     #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
     # Evaluate the model in test with DICE score
  
     # Load the best model
-    modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Model2D_Augmentation/vgg2D_aug/vgg2D_aug_cv_{cv_indx}.pth"
+    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes_pytorch/vgg2D_aug_unified_cv_{cv_indx}.pth"
     model.load_state_dict(torch.load(modelname))
     model.eval()
 
@@ -100,7 +99,7 @@ for cv_indx in range(len(unique_patient_id)):
         dice = (2 * intersection) / (union + 1e-8)
         dice_score.append(dice)
 
-        for j in range(16):
+        '''for j in range(16):
             fig, ax = plt.subplots(1, 2, figsize=(10, 5))
             ax[0].imshow(masks[j,0,:,:], cmap="gray")
             ax[0].set_title("Mask Manual")
@@ -108,7 +107,7 @@ for cv_indx in range(len(unique_patient_id)):
             ax[1].set_title("Prediction Mask")
             resultpath = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results/vgg2D_aug_{i}_{j}.png"
             plt.savefig(resultpath)
-            plt.close()
+            plt.close()'''
     
     cv_DICE.append(np.mean(dice_score))
     print(f"Mean DICE score: {np.mean(dice_score)}")

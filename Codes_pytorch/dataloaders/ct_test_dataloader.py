@@ -1,5 +1,6 @@
 import os
 from torch.utils.data import Dataset
+from torchvision import transforms
 from PIL import Image
 import torch
 
@@ -23,6 +24,7 @@ class CATScansDataset(Dataset):
         image = Image.open(img_path).convert("L") # Convert to grayscale
         if self.transform:
             image = self.transform(image) / 255
+            #image = self.transform(image)
 
         if self.window:
             image = self.window(image)
@@ -50,11 +52,11 @@ class windowSetup:
 
     def windowing(self, image, window_center, window_width):
         # Apply windowing to the image
-        window_center = (window_center + 1024) / (3071 + 1024)
-        window_width = window_width / (3071 + 1024)
+        #window_center = (window_center + 1024) / (3071 + 1024)
+        #window_width = window_width / (3071 + 1024)
         lower_bound = window_center - window_width / 2
         upper_bound = window_center + window_width / 2
         image = torch.clamp(image, min=lower_bound, max=upper_bound)
-        image = (image - lower_bound) / (upper_bound - lower_bound)
+        image = 255*(image - lower_bound) / (upper_bound - lower_bound)
 
         return image

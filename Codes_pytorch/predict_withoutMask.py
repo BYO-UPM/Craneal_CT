@@ -11,10 +11,12 @@ import torch
 import segmentation_models_pytorch as smp
 from tqdm import tqdm
 import csv
+import os
 #from losses.losses import AsymmetricUnifiedFocalLoss
 
 # Path
-path = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/qui"
+path = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/quicktest"
+filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -25,8 +27,8 @@ transform = transforms.Compose([
 windowing = PreprocessWindow()
 
 # Initialize CATScansDataset with the root directory and transformations
-test_dataset = CATScansDataset(root_dir=path, transform=transform, window=windowing)
-test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
+test_dataset = CATScansDataset(root_dir=path, transform=transform)
+test_loader = DataLoader(test_dataset, batch_size=40, shuffle=False)
 
 # Check two images
 #original_image, mask_image, patient_id, slice_number = full_dataset[0]
@@ -39,7 +41,7 @@ test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 #plt.show()
 for cv_indx in range(1):
 
-    ENCODER = 'resnet50'
+    ENCODER = 'vgg16'
     ENCODER_WEIGHTS = 'imagenet'
     ACTIVATION = 'sigmoid'
 
@@ -57,7 +59,7 @@ for cv_indx in range(1):
     model.to(device)
  
     # Load the best model
-    modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Model2D_Augmentation/resnet50_aug/resnet2D_aug_cv_{cv_indx}.pth"
+    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/resnet2D_window_cv_{cv_indx}.pth"
     #modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/vanilla2D_window_cv_0.pth"
     model.load_state_dict(torch.load(modelname))
     model.eval()
