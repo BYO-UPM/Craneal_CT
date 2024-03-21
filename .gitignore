@@ -41,3 +41,4 @@ vgg2D_window_cv_4.pth
 vgg2D_window_cv_5.pth
 vgg2D_window_cv_6.pth
 window_vgg2D_output.log
+final_model_vgg2D_fulldataset.log

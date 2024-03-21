@@ -27,7 +27,7 @@ transform = transforms.Compose([
 windowing = PreprocessWindow()
 
 # Initialize CATScansDataset with the root directory and transformations
-test_dataset = CATScansDataset(root_dir=path, window=windowing)
+test_dataset = CATScansDataset(root_dir=path, transform=transform, window=windowing)
 test_loader = DataLoader(test_dataset, batch_size=40, shuffle=False)
 
 fig, axs = plt.subplots(10, 4, figsize=(16, 40))  # 5 rows, 8 columns

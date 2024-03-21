@@ -33,7 +33,7 @@ class CATScansDataset(Dataset):
 
 class PreprocessWindow:
     def __init__(self):
-        self.window = windowSetup(window_center=330, window_width=350)
+        self.window = windowSetup(window_center=500, window_width=2000)
 
     def __call__(self, image):
         window_ori = self.window(image)
