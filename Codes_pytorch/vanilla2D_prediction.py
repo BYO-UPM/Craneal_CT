@@ -101,7 +101,7 @@ for cv_indx in range(len(unique_patient_id)):
 
     # Training loop
     num_epochs = 40
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 

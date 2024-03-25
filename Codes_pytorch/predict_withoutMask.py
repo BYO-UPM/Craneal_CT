@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 from torchvision import transforms
 from torch.utils.data import DataLoader
 #from models.unet2d_vanilla import VanillaUNet2D
-import numpy as np
 import torch
 import segmentation_models_pytorch as smp
 from tqdm import tqdm
@@ -39,38 +38,39 @@ test_loader = DataLoader(test_dataset, batch_size=40, shuffle=False)
 #ax[1].imshow(mask_image[0], cmap="gray")
 #ax[1].set_title("Mask Image")
 #plt.show()
-for cv_indx in range(1):
 
-    ENCODER = 'vgg16'
-    ENCODER_WEIGHTS = 'imagenet'
-    ACTIVATION = 'sigmoid'
+#for cv_indx in range(1):
 
-    # Instantiate the model
-    model = smp.Unet(
-        encoder_name=ENCODER, 
-        encoder_weights=ENCODER_WEIGHTS, 
-        classes=1, 
-        activation=ACTIVATION,
-        in_channels=1,
-    )
+ENCODER = 'vgg16'
+ENCODER_WEIGHTS = 'imagenet'
+ACTIVATION = 'sigmoid'
 
-    #model = VanillaUNet2D(1, 512, 512)
-    device = torch.device("cpu")
-    model.to(device)
+# Instantiate the model
+model = smp.Unet(
+    encoder_name=ENCODER, 
+    encoder_weights=ENCODER_WEIGHTS, 
+    classes=1, 
+    activation=ACTIVATION,
+    in_channels=1,
+)
+
+#model = VanillaUNet2D(1, 512, 512)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model.to(device)
  
-    # Load the best model
-    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/resnet2D_window_cv_{cv_indx}.pth"
-    #modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/vanilla2D_window_cv_0.pth"
-    model.load_state_dict(torch.load(modelname))
-    model.eval()
+# Load the best model
+modelname = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Model2D/vgg2D_aug_win_fulldataset.pth"
+#modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/vanilla2D_window_cv_0.pth"
+model.load_state_dict(torch.load(modelname))
+model.eval()
 
-    for i, data in enumerate(test_loader):
-        inputs = data
-        inputs = inputs.to(device)
+for i, data in enumerate(test_loader):
+    inputs = data
+    inputs = inputs.to(device)
 
-        # Forward
-        mask_prediction = model(inputs)
-        mask_prediction = mask_prediction.detach().cpu().numpy()
-        mask_prediction = mask_prediction > 0.5
+    # Forward
+    mask_prediction = model(inputs)
+    mask_prediction = mask_prediction.detach().cpu().numpy()
+    mask_prediction = mask_prediction > 0.5
 
 
