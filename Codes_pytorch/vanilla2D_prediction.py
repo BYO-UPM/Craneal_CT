@@ -1,5 +1,6 @@
 #from dataloaders.ct_aug_dataloader import (
-from dataloaders.ct_window_dataloader import (
+#from dataloaders.ct_window_dataloader import (
+from dataloaders.ct_only_1_window_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
@@ -158,12 +159,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"vanilla2D_window_cv_{cv_indx}.pth"
+                modelname = f"vanilla2D_window6_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"loss_vanilla2D_window_cv_{cv_indx}.csv"
+    filename = f"loss_vanilla2D_window6_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])

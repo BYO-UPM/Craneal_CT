@@ -15,6 +15,7 @@ class CATScansDataset(Dataset):
         self.transform = transform
         self.window = window
         self.filenames = [f for f in sorted(os.listdir(root_dir)) if f.endswith('.png')]
+        self.filenames.sort()
 
     def __len__(self):
         return len(self.filenames)

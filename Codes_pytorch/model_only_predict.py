@@ -45,8 +45,10 @@ print(f"Number of unique patients: {len(unique_patient_id)}")
 # Set-up for cross-validation
 cv_DICE = []
 
-for cv_indx in range(len(unique_patient_id)):
+#for cv_indx in range(len(unique_patient_id)):
+for ccc in range(1):
     # Test set
+    cv_indx = 5
     test_patients = [unique_patient_id[cv_indx]]
 
     # Split the full dataset based on patient_id
@@ -74,7 +76,9 @@ for cv_indx in range(len(unique_patient_id)):
     # Evaluate the model in test with DICE score
  
     # Load the best model
-    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes_pytorch/vgg2D_aug_unified_cv_{cv_indx}.pth"
+    modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/DL_Models/Model_2D/Aug/vgg16/vgg2D_aug_cv_5.pth"
+    #modelname = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/DL_Models/Model_2D/Aug_Window/vgg16/vgg2D_window_cv_5.pth"
+    
     model.load_state_dict(torch.load(modelname))
     model.eval()
 
@@ -90,6 +94,7 @@ for cv_indx in range(len(unique_patient_id)):
         #mask_prediction = torch.sigmoid(mask_prediction)
         mask_prediction = mask_prediction.detach().cpu().numpy()
         masks = masks.detach().cpu().numpy()
+        inputs = inputs.detach().cpu().numpy()
 
         # DICE score
         mask_prediction = mask_prediction > 0.5
@@ -99,15 +104,20 @@ for cv_indx in range(len(unique_patient_id)):
         dice = (2 * intersection) / (union + 1e-8)
         dice_score.append(dice)
 
-        '''for j in range(16):
-            fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-            ax[0].imshow(masks[j,0,:,:], cmap="gray")
-            ax[0].set_title("Mask Manual")
-            ax[1].imshow(mask_prediction[j,0,:,:], cmap="gray")
-            ax[1].set_title("Prediction Mask")
-            resultpath = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results/vgg2D_aug_{i}_{j}.png"
+        for j in range(16):
+            '''fig, ax = plt.subplots(1, 3, figsize=(10, 5))
+            ax[0].imshow(inputs[j,0,:,:], cmap="gray")
+            ax[0].set_title("Original CT Image")
+            ax[1].imshow(masks[j,0,:,:], cmap="gray")
+            ax[1].set_title("Mask Manual")
+            ax[2].imshow(mask_prediction[j,0,:,:], cmap="gray")
+            ax[2].set_title("Prediction Mask")
+            for axs in ax:
+                axs.axis("off")
+            resultpath = f"/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results/normal/vgg2D_aug_win_{i}_{j}.png"
             plt.savefig(resultpath)
             plt.close()'''
+            plt.imsave(f'/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results/normal/vgg2D_aug_{i}_{j}.png', mask_prediction[j,0,:,:], cmap='gray', format='png')
     
     cv_DICE.append(np.mean(dice_score))
     print(f"Mean DICE score: {np.mean(dice_score)}")

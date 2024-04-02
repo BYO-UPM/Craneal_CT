@@ -120,12 +120,12 @@ class CustomAugmentation:
             # Apply windowing to the image
             window_ori = window_aug(image)
             # Add the final augmented image and mask to the lists
-            augmented_images.append(window_ori)
+            augmented_images.append(image)
             augmented_masks.append(mask)
         
         for geom_aug in self.geometric_aug_list:
             # Apply geometric transformations to the image and mask
-            transformed_image = geom_aug(image)
+            transformed_image = geom_aug(window_ori)
             transformed_mask = geom_aug(mask)
 
             # Apply a random noise augmentation to the transformed image

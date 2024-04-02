@@ -2,14 +2,13 @@ import os
 import torch
 import random
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms
 from PIL import Image
 import torch.nn.functional as F
 from torchvision.transforms import (
-    Compose,
     RandomHorizontalFlip,
     RandomVerticalFlip,
     RandomAffine,
+    GaussianBlur,
 )
 
 
@@ -35,7 +34,6 @@ class CATScansDataset(Dataset):
 
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):
-                files.sort()
                 for original_file in files:
                     self.patient_id.append(patient_id)
                     slice_number = original_file.split("_")[
@@ -85,6 +83,13 @@ class CustomAugmentation:
         self.noise_SaltPepper_aug = SaltAndPepperNoise(salt_prob=0.01, pepper_prob=0.01)
         self.noise_Normal_aug = LaplaceNoise(mean=0, std=0.1)
         self.noise_Poisson_aug = PoissonNoise()
+        self.gaussian_blur = GaussianBlur(kernel_size=(15, 15), sigma=(2.0, 3.0))
+        self.window1 = windowSetup(window_center=330, window_width=350)
+        self.window2 = windowSetup(window_center=-30, window_width=30)
+        self.window3 = windowSetup(window_center=-100, window_width=900)
+        self.window4 = windowSetup(window_center=25, window_width=95)
+        self.window5 = windowSetup(window_center=300, window_width=2500)
+        self.window6 = windowSetup(window_center=10, window_width=450)
 
         self.geometric_aug_list = [
             # Geometrics transformations
@@ -92,19 +97,39 @@ class CustomAugmentation:
             RandomVerticalFlip(p=1.0),    # Always apply vertical flip
             self.scale_x,  # Scaling only in x-axis
             RandomAffine(degrees=(self.degree,self.degree)), # Rotation
-        ]     
+        ]
+
+        self.window_list = [
+            # List of 6 new windows
+            self.window1,
+            self.window2,
+            self.window3,
+            self.window4,
+            self.window5,
+            self.window6,
+        ]
+
 
     def __call__(self, image, mask):
         augmented_images = []
         augmented_masks = []
+
         augmented_images.append(image)
         augmented_masks.append(mask)
-        # Apply geometric transformations
-        #image = self.geometric_augmentations(image)
-        #mask = self.geometric_augmentations(mask)
-        #image, mask = self.geometric_augmentations(image, mask)
 
+        blur_image = self.gaussian_blur(image)
+        augmented_images.append(blur_image)
+        augmented_masks.append(mask)
+
+        for window_aug in self.window_list:
+            # Apply windowing to the image
+            window_ori = window_aug(image)
+            # Add the final augmented image and mask to the lists
+            augmented_images.append(window_ori)
+            augmented_masks.append(mask)
+        
         for geom_aug in self.geometric_aug_list:
+            # Apply geometric transformations to the image and mask
             transformed_image = geom_aug(image)
             transformed_mask = geom_aug(mask)
 
@@ -122,9 +147,15 @@ class CustomAugmentation:
             augmented_images.append(final_image)
             augmented_masks.append(transformed_mask)
 
+            for window_aug in self.window_list:
+                # Apply windowing to the image
+                window_image = window_aug(transformed_image)
+                # Add the final augmented image and mask to the lists
+                augmented_images.append(window_image)
+                augmented_masks.append(transformed_mask)
+
         # Return the list of augmented images and masks
         return augmented_images, augmented_masks
-        #return image, mask
     
 
 class ScaleX:
@@ -228,13 +259,13 @@ class AugmentedDataset(torch.utils.data.Dataset):
         self.augmentation = augmentation
     
     def __len__(self):
-        # 4 images augmentation + 1 original
-        return len(self.subset) * 5
+        # 4 images augmentation + 6 windows 
+        return len(self.subset) * 36 
  
     def __getitem__(self, index):
         # Calculate original index and augmentation index
-        original_idx = index // 5
-        aug_idx = index % 5
+        original_idx = index // 36
+        aug_idx = index % 36
         original_img, mask_img, patient_id, slice_number = self.subset[original_idx]
         
         if self.augmentation:
@@ -247,3 +278,23 @@ class AugmentedDataset(torch.utils.data.Dataset):
        
         return original_img, mask_img, patient_id, slice_number
 
+class windowSetup:
+    def __init__(self, window_center, window_width):
+        self.window_center = window_center
+        self.window_width = window_width
+
+    def __call__(self, image):
+        # Apply windowing to the image
+        image = self.windowing(image, self.window_center, self.window_width)
+        return image
+
+    def windowing(self, image, window_center, window_width):
+        # Apply windowing to the image
+        window_center = (window_center + 1024) / (3071 + 1024)
+        window_width = window_width / (3071 + 1024)
+        lower_bound = window_center - window_width / 2
+        upper_bound = window_center + window_width / 2
+        image = torch.clamp(image, min=lower_bound, max=upper_bound)
+        image = (image - lower_bound) / (upper_bound - lower_bound)
+
+        return image
