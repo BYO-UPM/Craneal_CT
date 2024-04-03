@@ -17,7 +17,9 @@ contour_image = cv2.cvtColor(mask_image, cv2.COLOR_GRAY2BGR)  # Convert grayscal
 # Draw contours
 cv2.drawContours(contour_image, contours, -1, (0, 255, 255), 1)  # Drawing in yellow
 
-# Show the image with contours
-plt.imshow(cv2.cvtColor(contour_image, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB for displaying with matplotlib
-plt.axis('off')  # Hide axes
-plt.show()
+height, width = mask_image.shape
+transparent_image = np.zeros((height, width, 4), dtype=np.uint8)
+
+cv2.drawContours(transparent_image, contours, -1, (0, 255, 255, 255), 1)
+
+cv2.imwrite('contours_on_transparent_background.png', transparent_image)
