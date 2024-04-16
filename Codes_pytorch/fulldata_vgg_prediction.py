@@ -17,7 +17,7 @@ import csv
 #from losses.losses import AsymmetricUnifiedFocalLoss
 
 # Path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
+path = "../CAT_scans_Preprocessed"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -46,6 +46,11 @@ model = smp.Unet(
     activation=ACTIVATION,
     in_channels=1,
 )
+if torch.cuda.device_count() > 1:
+    print(f"Using {torch.cuda.device_count()} GPUs!")
+    model = nn.DataParallel(model)
+
+model.to('cuda')  # Move model to GPU
 
 dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
 focal_loss = FocalLossForProbabilities()
@@ -53,26 +58,19 @@ optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # Training loop
 num_epochs = 40
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
-model.to(device)
-
 train_loss_list = []
 for epoch in tqdm(range(num_epochs)):
     model.train()
     running_loss = 0.0
     for i, data in enumerate(train_loader):
         inputs, masks, _, _ = data
-        inputs, masks = inputs.to(device), masks.to(device)
+        inputs, masks = inputs.cuda(), masks.cuda()
 
-        # Zero the parameter gradients
         optimizer.zero_grad()
-
-        # Forward + backward + optimize
         mask_prediction = model(inputs)
         diceloss = dice_loss(mask_prediction, masks)
         focalloss = focal_loss(mask_prediction, masks)
         loss = diceloss + focalloss
-        # loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
         loss.backward()
         optimizer.step()
 
