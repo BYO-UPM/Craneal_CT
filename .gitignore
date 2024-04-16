@@ -1,4 +1,6 @@
 /**/__pycache__
+*.csv
+*.pth 
 aug_resnet2D_output.log
 loss_resnet2D_aug_cv_0.csv
 loss_resnet2D_aug_cv_1.csv
@@ -43,7 +45,6 @@ vgg2D_window_cv_6.pth
 window_vgg2D_output.log
 final_model_vgg2D_fulldataset.log
 vgg2D_aug_win_fulldataset.pth
-MedSAM
-MedSAM
-MedSAM
+
+/MedSam/
 MedSAM

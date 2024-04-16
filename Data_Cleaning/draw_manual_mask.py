@@ -9,14 +9,14 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/P38/Auto_masks"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/P16/Auto_masks"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/P38/Auto_lines"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/P16/Auto_lines"
 
-inx_s=45
+inx_s=0
 for f in filenames:
     auto_mask = os.path.join(path, f)
     mask_image = cv2.imread(auto_mask, cv2.IMREAD_GRAYSCALE)
@@ -30,7 +30,7 @@ for f in filenames:
     cv2.drawContours(transparent_image, contours, -1, (0, 255, 255, 255), 1)
 
     # Save the lines
-    name = f"P38_auto_lines_{inx_s}.png"
+    name = f"P16_auto_lines_{inx_s}.png"
     inx_s = inx_s+1
     output_name = os.path.join(output_path, name)
     cv2.imwrite(output_name, transparent_image)

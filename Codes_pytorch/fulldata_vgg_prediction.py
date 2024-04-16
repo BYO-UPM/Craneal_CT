@@ -1,4 +1,4 @@
-from dataloaders.ct_window_dataloader import (
+from dataloaders.ct_zoomin_dataloader import (
 #from dataloaders.ct_blur_dataloader import (
     CATScansDataset,
     CustomAugmentation,
@@ -53,7 +53,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # Training loop
 num_epochs = 40
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 train_loss_list = []
@@ -88,12 +88,12 @@ for epoch in tqdm(range(num_epochs)):
         if running_loss / len(train_loader) < best_loss:
             best_loss = running_loss / len(train_loader)
             print(f"Best model so far, saving the model at epoch {epoch + 1}")
-            modelname = f"vgg2D_aug_win_fulldataset.pth"
+            modelname = f"vgg2D_crop_fulldataset.pth"
             torch.save(model.state_dict(), modelname)
 
 # Save information for training and validation losses
 # New csv file
-filename = f"loss_vgg2D_aug_win_fulldataset.csv"
+filename = f"loss_vgg2D_crop_fulldataset.csv"
 with open(filename, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Train Loss'])

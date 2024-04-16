@@ -1,6 +1,6 @@
-#from dataloaders.ct_aug_dataloader import (
+from dataloaders.ct_aug_dataloader import (
 #from dataloaders.ct_window_dataloader import (
-from dataloaders.ct_only_1_window_dataloader import (
+#from dataloaders.ct_zoomin_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
@@ -52,7 +52,7 @@ print(f"Number of unique patients: {len(unique_patient_id)}")
 cv_DICE = []
 
 # 7 patients to train, 1 to val and 1 to test
-for cv_indx in range(len(unique_patient_id)):
+for cv_indx in range(3):
     #random.seed(42)
     #random.shuffle(unique_patient_id)
     #train_patients = unique_patient_id[:7]
@@ -85,7 +85,7 @@ for cv_indx in range(len(unique_patient_id)):
     val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 
-    ENCODER = 'resnet50'
+    ENCODER = 'vgg16'
     ENCODER_WEIGHTS = 'imagenet'
     ACTIVATION = 'sigmoid'
 
@@ -108,7 +108,7 @@ for cv_indx in range(len(unique_patient_id)):
 
     # Training loop
     num_epochs = 40
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
@@ -165,12 +165,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"resnet2D_window6_cv_{cv_indx}.pth"
+                modelname = f"vgg2D_z_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"loss_resnet2D_window6_cv_{cv_indx}.csv"
+    filename = f"loss_vgg2D_z_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])
