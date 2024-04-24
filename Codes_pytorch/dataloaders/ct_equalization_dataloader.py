@@ -1,18 +1,19 @@
 import os
+import cv2
 import torch
 import random
-from torch.utils.data import Dataset
+import numpy as np
+from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-import cv2
 from PIL import Image
-import math
 import torch.nn.functional as F
 from torchvision.transforms import (
+    Compose,
     RandomHorizontalFlip,
     RandomVerticalFlip,
     RandomAffine,
-    GaussianBlur,
 )
+
 
 class CATScansDataset(Dataset):
     def __init__(self, root_dir, transform=None, augmentations=None):
@@ -36,6 +37,7 @@ class CATScansDataset(Dataset):
 
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):
+                files.sort()
                 for original_file in files:
                     self.patient_id.append(patient_id)
                     slice_number = original_file.split("_")[
@@ -56,6 +58,7 @@ class CATScansDataset(Dataset):
 
     def __getitem__(self, idx):
         original_path, mask_path, patient_id, slice_number = self.samples[idx]
+        #original_image = Image.open(original_path).convert("L")  # Convert to grayscale
         mask_image = Image.open(mask_path).convert("L")
 
         if self.transform:
@@ -93,15 +96,6 @@ class CustomAugmentation:
         self.noise_SaltPepper_aug = SaltAndPepperNoise(salt_prob=0.01, pepper_prob=0.01)
         self.noise_Normal_aug = LaplaceNoise(mean=0, std=0.1)
         self.noise_Poisson_aug = PoissonNoise()
-        self.gaussian_blur = GaussianBlur(kernel_size=(15, 15), sigma=(2.0, 3.0))
-        self.circleCrop = circleCrop(radius=150)
-        self.randomKeepSquare = randomCrop(square_size=180, triangle_size=150, circle_size=100)
-        self.window1 = windowSetup(window_center=330, window_width=350)
-        self.window2 = windowSetup(window_center=-30, window_width=30)
-        self.window3 = windowSetup(window_center=-100, window_width=900)
-        self.window4 = windowSetup(window_center=25, window_width=95)
-        self.window5 = windowSetup(window_center=300, window_width=2500)
-        self.window6 = windowSetup(window_center=10, window_width=450)
 
         self.geometric_aug_list = [
             # Geometrics transformations
@@ -109,48 +103,19 @@ class CustomAugmentation:
             RandomVerticalFlip(p=1.0),    # Always apply vertical flip
             self.scale_x,  # Scaling only in x-axis
             RandomAffine(degrees=(self.degree,self.degree)), # Rotation
-        ]
-
-        self.window_list = [
-            # List of 6 new windows
-            self.window1,
-            self.window2,
-            self.window3,
-            self.window4,
-            self.window5,
-            self.window6,
-        ]
-
+        ]     
 
     def __call__(self, image, mask):
         augmented_images = []
         augmented_masks = []
-
         augmented_images.append(image)
         augmented_masks.append(mask)
+        # Apply geometric transformations
+        #image = self.geometric_augmentations(image)
+        #mask = self.geometric_augmentations(mask)
+        #image, mask = self.geometric_augmentations(image, mask)
 
-        blur_image = self.gaussian_blur(image)
-        augmented_images.append(blur_image)
-        augmented_masks.append(mask)
-
-        circle_image = self.circleCrop(image)
-        augmented_images.append(circle_image)
-        circle_mask = self.circleCrop(mask)
-        augmented_masks.append(circle_mask)
-        
-        randomt_image, randomt_mask = self.randomKeepSquare(image, mask)
-        augmented_images.append(randomt_image)
-        augmented_masks.append(randomt_mask)
-
-        for window_aug in self.window_list:
-            # Apply windowing to the image
-            window_ori = window_aug(image)
-            # Add the final augmented image and mask to the lists
-            augmented_images.append(window_ori)
-            augmented_masks.append(mask)
-        
         for geom_aug in self.geometric_aug_list:
-            # Apply geometric transformations to the image and mask
             transformed_image = geom_aug(image)
             transformed_mask = geom_aug(mask)
 
@@ -168,15 +133,9 @@ class CustomAugmentation:
             augmented_images.append(final_image)
             augmented_masks.append(transformed_mask)
 
-            for window_aug in self.window_list:
-                # Apply windowing to the image
-                window_image = window_aug(transformed_image)
-                # Add the final augmented image and mask to the lists
-                augmented_images.append(window_image)
-                augmented_masks.append(transformed_mask)
-
         # Return the list of augmented images and masks
         return augmented_images, augmented_masks
+        #return image, mask
     
 
 class ScaleX:
@@ -205,116 +164,6 @@ class ScaleX:
         scaled_x = F.grid_sample(image.unsqueeze(0), grid, align_corners=False)
 
         return scaled_x.squeeze(0)
-
-
-class circleCrop:
-    def __init__(self, radius):
-        self.radius = radius
-
-    def __call__(self, image):
-        # Crop the image to a circle with radius
-        _, w, h = image.size()
-        x, y = 150, h // 2
-        mask = torch.zeros((w, h))
-        for i in range(w):
-            for j in range(h):
-                if (i - x) ** 2 + (j - y) ** 2 <= self.radius ** 2:
-                    mask[i, j] = 1
-        masked_image = image * mask
-
-        roi = masked_image[:, 0:300, 106:406]
-        # Calculate the scale factor to expand the ROI to 512x512
-        
-        # Resize the ROI to 512x512
-        resized_image = F.interpolate(roi.unsqueeze(0), size=(512, 512), mode='bilinear', align_corners=False)
-        resized_image = resized_image.squeeze(0)  # Remove the batch dimension
-        
-        return resized_image
-
-
-#class randomKeepSquare:
-#    def __init__(self, square_size):
-#        self.square_size = square_size
-#
-#    def __call__(self, image, mask):
-#        # Crop the image to a square with random size
-#        _, w, h = image.size()
-#        x = random.randint(0, w - self.square_size)
-#        y = random.randint(0, h - self.square_size)
-#
-#        canva = torch.zeros((w, h))
-#        canva[x:x+self.square_size, y:y+self.square_size] = 1
-#
-#        new_image = image * canva
-#        new_mask = mask * canva
-#        return new_image, new_mask
-
-
-class randomCrop:
-    def __init__(self, square_size, triangle_size, circle_size):
-        self.square_size = square_size
-        self.triangle_size = triangle_size
-        self.circle_size = circle_size
-    
-    def __call__(self, image, mask):
-        # Image size
-        _, w, h = image.size()
-        canva = torch.zeros((w, h))
-
-        points = []
-        while len(points) < 3:
-            x = random.randint(100, w-100)
-            y = random.randint(100, h-100)
-            point = (x, y)
-            if all(abs(point[0] - p[0]) > 50 and abs(point[1] - p[1]) > 50 for p in points):
-                points.append(point)
-        
-        # Draw the square
-        canva[points[0][0]:points[0][0]+self.square_size, points[0][1]:points[0][1]+self.square_size] = 1
-
-        # Draw the circle
-        for i in range(w):
-            for j in range(h):
-                if (i - points[1][0]) ** 2 + (j - points[1][1]) ** 2 <= self.circle_size ** 2:
-                    canva[i, j] = 1
-
-        # Draw the triangle
-        center_x, center_y = points[2]
-        x1 = center_x - self.triangle_size // 2
-        y1 = center_y + int(self.triangle_size * math.sqrt(3) / 2)
-        x2 = center_x + self.triangle_size // 2
-        y2 = center_y + int(self.triangle_size * math.sqrt(3) / 2)
-        x3 = center_x
-        y3 = center_y - int(self.triangle_size * math.sqrt(3) / 2)
-
-        # Determine the range of x and y coordinates for the triangle
-        min_x = min(x1, x2, x3)
-        max_x = max(x1, x2, x3)
-        min_y = min(y1, y2, y3)
-        max_y = max(y1, y2, y3)
-
-        # Limit the range within the canvas dimensions
-        min_x = max(0, min_x)
-        max_x = min(canva.shape[0] - 1, max_x)
-        min_y = max(0, min_y)
-        max_y = min(canva.shape[1] - 1, max_y)
-
-        # Draw triangle
-        for i in range(min_x, max_x + 1):
-            for j in range(min_y, max_y + 1):
-                if self.is_inside_triangle(i, j, x1, y1, x2, y2, x3, y3):
-                    canva[i, j] = 1
-
-        new_image = image * canva
-        new_mask = mask * canva
-        return new_image, new_mask
-    
-    def is_inside_triangle(self, x, y, x1, y1, x2, y2, x3, y3):
-    # Check if point (x, y) is inside the triangle defined by (x1, y1), (x2, y2), (x3, y3)
-        area = 0.5 * (-y2 * x3 + y1 * (-x2 + x3) + x1 * (y2 - y3) + x2 * y3)
-        s = 1 / (2 * area) * (y1 * x3 - x1 * y3 + (y3 - y1) * x + (x1 - x3) * y)
-        t = 1 / (2 * area) * (x1 * y2 - y1 * x2 + (y1 - y2) * x + (x2 - x1) * y)
-        return 0 <= s <= 1 and 0 <= t <= 1 and s + t <= 1
 
 
 class GaussianNoise:
@@ -390,13 +239,13 @@ class AugmentedDataset(torch.utils.data.Dataset):
         self.augmentation = augmentation
     
     def __len__(self):
-        # 4 images augmentation + 6 windows + blur + circleCrop + randomKeepSquare
-        return len(self.subset) * 38 
+        # 4 images augmentation + 1 original
+        return len(self.subset) * 5
  
     def __getitem__(self, index):
         # Calculate original index and augmentation index
-        original_idx = index // 38
-        aug_idx = index % 38
+        original_idx = index // 5
+        aug_idx = index % 5
         original_img, mask_img, patient_id, slice_number = self.subset[original_idx]
         
         if self.augmentation:
@@ -409,23 +258,3 @@ class AugmentedDataset(torch.utils.data.Dataset):
        
         return original_img, mask_img, patient_id, slice_number
 
-class windowSetup:
-    def __init__(self, window_center, window_width):
-        self.window_center = window_center
-        self.window_width = window_width
-
-    def __call__(self, image):
-        # Apply windowing to the image
-        image = self.windowing(image, self.window_center, self.window_width)
-        return image
-
-    def windowing(self, image, window_center, window_width):
-        # Apply windowing to the image
-        window_center = (window_center + 1024) / (3071 + 1024)
-        window_width = window_width / (3071 + 1024)
-        lower_bound = window_center - window_width / 2
-        upper_bound = window_center + window_width / 2
-        image = torch.clamp(image, min=lower_bound, max=upper_bound)
-        image = (image - lower_bound) / (upper_bound - lower_bound)
-
-        return image

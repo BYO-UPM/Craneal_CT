@@ -1,4 +1,4 @@
-from dataloaders.ct_aug_dataloader import (
+from dataloaders.ct_randomcrop_dataloader import (
 #from dataloaders.ct_window_dataloader import (
     CATScansDataset,
     CustomAugmentation,

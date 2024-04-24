@@ -13,12 +13,12 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Original"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/new_test_CT/P38/original"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/dddd"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/new_test_CT/P38/random"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -46,7 +46,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/vgg2D_crop_fulldataset.pth"
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/random_crop_model_epoch_35.pth"
 model.load_state_dict(torch.load(modelname))
 model.eval()
 inx_s = 0
@@ -61,7 +61,7 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P16_new_auto_mask_{inx_s}.png"
+        output_name = f"P16_old_auto_mask_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')

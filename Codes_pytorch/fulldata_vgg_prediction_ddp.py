@@ -32,6 +32,7 @@ def train(rank, world_size):
     ])
     full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed", transform=transform)
     custom_augmentation = CustomAugmentation()
+    print("Applying the augmentation to the train dataset")
     train_dataset = AugmentedDataset(full_dataset, custom_augmentation)
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank)
     train_loader = DataLoader(train_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
@@ -87,7 +88,7 @@ def train(rank, world_size):
     cleanup()
 
 def main():
-    world_size = 4  # Number of GPUs
+    world_size = 3  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":
