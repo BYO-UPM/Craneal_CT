@@ -9,6 +9,24 @@ import plotly.graph_objects as go
 import imageio
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from skimage.measure import marching_cubes
+from scipy.ndimage import label, generate_binary_structure
+
+
+def remove_floating_objects(volume):
+    # Generate a binary structure for 3D connectivity (26-connected)
+    struct = generate_binary_structure(3, 3)
+
+    # Label connected components
+    labeled_volume, num_features = label(volume, structure=struct)
+
+    # Find the largest connected component
+    component_sizes = np.bincount(labeled_volume.ravel())
+    largest_component_label = component_sizes[1:].argmax() + 1
+
+    # Create a mask for the largest connected component
+    largest_component = labeled_volume == largest_component_label
+
+    return largest_component
 
 
 # DICE
@@ -72,17 +90,17 @@ for fold in folds:
     pred_imgs = np.stack(np.array(pred_imgs), axis=-1)
 
     # Plot 2D comparison of the 20th slice
-    slice_index = 19  # 20th slice (0-based index)
+    slice_index = 10  # 20th slice (0-based index)
 
     plt.figure(figsize=(10, 5))
 
     plt.subplot(1, 2, 1)
     plt.imshow(real_imgs[:, :, slice_index], cmap="gray")
-    plt.title("Ground Truth - Slice 20")
+    plt.title("Ground Truth - Slice 10")
 
     plt.subplot(1, 2, 2)
     plt.imshow(pred_imgs[:, :, slice_index], cmap="gray")
-    plt.title("Prediction - Slice 20")
+    plt.title("Prediction - Slice 10")
 
     plt.tight_layout()
     plt.show()
@@ -173,17 +191,13 @@ for fold in folds:
         pred_imgs, threshold=500, connectivity=26, in_place=False
     )
 
-    pred_imgs_clean = cc3d.connected_components(pred_imgs_clean, connectivity=26)
-
-    pred_imgs_clean = pred_imgs_clean > 0
+    # Uncomment this for removing floating objects
+    # pred_imgs_clean = remove_floating_objects(pred_imgs)
 
     # Fill holes with scipy binary_fill_holes
     from scipy.ndimage import binary_fill_holes
 
     pred_imgs_clean_holes = binary_fill_holes(pred_imgs_clean)
-
-    # Plot 2D comparison of the 20th slice
-    slice_index = 10  # 20th slice (0-based index)
 
     plt.figure(figsize=(10, 5))
 
