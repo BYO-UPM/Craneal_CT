@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
 import torch
+import cv2
 
 class CATScansDataset(Dataset):
     def __init__(self, root_dir, transform=None, window=None):
@@ -22,10 +23,14 @@ class CATScansDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = os.path.join(self.root_dir, self.filenames[idx])
-        image = Image.open(img_path).convert("L") # Convert to grayscale
+        #image = Image.open(img_path).convert("L") # Convert to grayscale
         if self.transform:
-            image = self.transform(image) / 255
-            #image = self.transform(image)
+            normal = transforms.Normalize(mean=0, std=(1 / 255))
+            numpy_image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))  # Create CLAHE object
+            equalized_image = clahe.apply(numpy_image)  # Apply CLAHE
+            original_image = self.transform(equalized_image) / 255
+            original_image = normal(original_image)
 
         if self.window:
             image = self.window(image)

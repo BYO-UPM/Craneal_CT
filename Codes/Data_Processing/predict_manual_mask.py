@@ -4,7 +4,6 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 import torch
 import segmentation_models_pytorch as smp
-from tqdm import tqdm
 import os
 import re
 
@@ -13,17 +12,17 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/new_test_CT/P38/original"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/dataset2/set3example/original"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/new_test_CT/P38/random"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/dataset2/set3example/with12_semi"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
     transforms.ToTensor(),  # Converts PIL Image to tensor and scales to [0, 1]
-    transforms.Normalize(mean=0, std=(1 / 255)),
+    #transforms.Normalize(mean=0, std=(1 / 255)),
 ])
 
 # Initialize CATScansDataset with the root directory and transformations
@@ -42,14 +41,27 @@ model = smp.Unet(
     in_channels=1,
 )
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/random_crop_model_epoch_35.pth"
-model.load_state_dict(torch.load(modelname))
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models/semi_subset2/full_model4_par_12.pth"
+#model.load_state_dict(torch.load(modelname))
+state_dict = torch.load(modelname)
+
+# delete "module." 
+new_state_dict = {}
+for key, value in state_dict.items():
+    if key.startswith('module.'):
+        new_key = key[7:]  # delete
+        new_state_dict[new_key] = value
+    else:
+        new_state_dict[key] = value
+
+# load the model
+model.load_state_dict(new_state_dict)
 model.eval()
-inx_s = 0
+inx_s = 1
 
 for i, data in enumerate(test_loader):
     inputs = data
@@ -61,7 +73,7 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P16_old_auto_mask_{inx_s}.png"
+        output_name = f"P38_semi_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')

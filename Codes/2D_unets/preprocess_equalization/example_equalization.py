@@ -13,8 +13,8 @@ for file in os.listdir(path):
 
     fig, ax = plt.subplots(1, 2, figsize=(10, 5))
     ax[0].imshow(image, cmap="gray")
-    ax[0].set_title("Original Image")
+    ax[0].set_title("Original CT Image")
     ax[1].imshow(equalized_image, cmap="gray")
-    ax[1].set_title("Mask Image")
+    ax[1].set_title("Equalized CT Image")
     plt.show()
 

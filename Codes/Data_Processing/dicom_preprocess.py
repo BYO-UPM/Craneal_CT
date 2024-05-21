@@ -80,12 +80,12 @@ def remove_date_time(ds):
     print("All date and time removed.")
     
 
-# New info.
-dicom_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/P40"
-save_path = "/media/my_ftp/BasesDeDatos_Paranasal_CAT/CT_Craneal/Prediction_Results"
-new_patient_id = 'P38'
-new_patient_name = 'P38'
-new_hospital_id = 'Hospital D'
+# New information
+dicom_path = "/home/Craneal_CT/P"
+save_path = "/home/Craneal_CT/new_P"
+new_patient_id = 'P'
+new_patient_name = 'P'
+new_hospital_id = 'Hospital'
 
 # Loop through all the files in the folder
 for filename in os.listdir(dicom_path):

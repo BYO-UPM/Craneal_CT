@@ -37,19 +37,20 @@ class CATScansDataset(Dataset):
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):
                 for original_file in files:
-                    self.patient_id.append(patient_id)
-                    slice_number = original_file.split("_")[
-                        -1
-                    ]  # Assuming file format is consistent
-                    mask_file = original_file.split("_")[0] + "_mask_" + slice_number
-                    self.samples.append(
-                        (
-                            os.path.join(original_dir, original_file),
-                            os.path.join(mask_dir, mask_file),
-                            patient_id,
-                            slice_number,
+                    if original_file.endswith(".png"):
+                        self.patient_id.append(patient_id)
+                        slice_number = original_file.split("_")[
+                            -1
+                        ]  # Assuming file format is consistent
+                        mask_file = original_file.split("_")[0] + "_mask_" + slice_number
+                        self.samples.append(
+                            (
+                                os.path.join(original_dir, original_file),
+                                os.path.join(mask_dir, mask_file),
+                                patient_id,
+                                slice_number,
+                            )
                         )
-                    )
 
     def __len__(self):
         return len(self.samples)

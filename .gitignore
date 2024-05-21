@@ -3,9 +3,11 @@
 *.pth 
 *.log
 *.png
+.DS_Store
 
 MedSAM
-crop_vgg.log
+dataset2
+medSAM_test
 new_test_CT/P30/original/.DS_Store
 new_test_CT/P30/.DS_Store
 new_test_CT/P16/.DS_Store

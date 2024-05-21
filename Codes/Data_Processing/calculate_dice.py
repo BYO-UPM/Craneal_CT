@@ -1,11 +1,10 @@
 from skimage.io import imread
 from skimage.filters import threshold_otsu
 import numpy as np
-import cv2
 import os
 import re
 
-# Prediction DICE
+# DICE
 def dice_coefficient(y_true, y_pred):
     intersection = np.sum(y_true * y_pred)
     union = np.sum(y_true) + np.sum(y_pred)
@@ -13,17 +12,20 @@ def dice_coefficient(y_true, y_pred):
     dice = (2.0 * intersection) / (union + 1e-8)
     return dice
 
+# Extract last number from a string
 def extract_last_number(filename):
     matches = re.findall(r'\d+', filename)
     return int(matches[-1]) if matches else 0
 
-path_groundtruth = '/content/drive/MyDrive/dice_images/Manual_masks'
-path_prediction = '/content/drive/MyDrive/dice_images/Auto_masks'
+path_groundtruth = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/dataset2/supervised_sub2/P16/Manual Mask'
+path_prediction = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/dataset2/supervised_sub2/P16/sup'
 
 pred_mask = os.listdir(path_prediction)
 pred_mask = sorted(pred_mask, key=extract_last_number)
 gt_mask = os.listdir(path_groundtruth)
-gt_mask.sort()
+gt_mask = sorted(gt_mask, key=extract_last_number)
+pred_mask = [file for file in pred_mask if file.endswith('.png')]
+gt_mask = [file for file in gt_mask if file.endswith('.png')]
 
 dice_coefficients = []
 

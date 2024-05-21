@@ -10,6 +10,7 @@ from segmentation_models_pytorch import Unet
 import segmentation_models_pytorch as smp
 from dataloaders.ct_randomcrop_dataloader import CATScansDataset, CustomAugmentation, AugmentedDataset
 from losses.losses import FocalLossForProbabilities
+from losses.losses import AsymmetricUnifiedFocalLoss
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import numpy as np
@@ -79,6 +80,7 @@ def train(rank, world_size):
         # Loss and optimizer
         dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
         focal_loss = FocalLossForProbabilities()
+        aufl = AsymmetricUnifiedFocalLoss(from_logits=False)
         optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
         # Training loop
@@ -99,7 +101,8 @@ def train(rank, world_size):
 
                 # Forward + backward + optimize
                 outputs = model(inputs)
-                loss = dice_loss(outputs, masks)+focal_loss(outputs, masks)
+                loss = aufl(outputs, masks)
+                #loss = dice_loss(outputs, masks)+focal_loss(outputs, masks)
                 loss.backward()
                 optimizer.step()
 
@@ -117,7 +120,8 @@ def train(rank, world_size):
 
                 # Forward
                 outputs = model(inputs)
-                loss = dice_loss(outputs, masks)+focal_loss(outputs, masks)
+                loss = aufl(outputs, masks)
+                #loss = dice_loss(outputs, masks)+focal_loss(outputs, masks)
                 
                 # Print statistics
                 running_loss += loss.item()
@@ -131,7 +135,7 @@ def train(rank, world_size):
                 if running_loss / len(val_loader) < best_loss:
                     best_loss = running_loss / len(val_loader)
                     print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                    modelname = f"vgg2D_randomcrop_cv_{cv_indx}.pth"
+                    modelname = f"vgg2D_unified_randomcrop_cv_{cv_indx}.pth"
                     torch.save(model.state_dict(), modelname)
             
             # Synchronize after each epoch
@@ -139,7 +143,7 @@ def train(rank, world_size):
         
         # Save information for training and validation losses
         # New csv file
-        filename = f"vgg2D_randomcrop_cv_{cv_indx}.csv"
+        filename = f"vgg2D_unified_randomcrop_cv_{cv_indx}.csv"
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])
@@ -183,7 +187,7 @@ def train(rank, world_size):
     cleanup()
 
 def main():
-    world_size = 4  # Number of GPUs
+    world_size = 2  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":

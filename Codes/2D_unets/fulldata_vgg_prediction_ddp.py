@@ -27,12 +27,11 @@ def train(rank, world_size):
 
     # Transform and dataset setup
     transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=0, std=(1 / 255)),
+        transforms.ToTensor()
+        #transforms.Normalize(mean=0, std=(1 / 255)),
     ])
     full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed", transform=transform)
     custom_augmentation = CustomAugmentation()
-    print("Applying the augmentation to the train dataset")
     train_dataset = AugmentedDataset(full_dataset, custom_augmentation)
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank)
     train_loader = DataLoader(train_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
@@ -50,7 +49,7 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 40
+    num_epochs = 12
     for epoch in tqdm(range(num_epochs)):
         model.train()
         running_loss = 0.0
@@ -71,7 +70,10 @@ def train(rank, world_size):
 
         if rank == 0:
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'random_crop_model_epoch_{epoch+1}.pth')
+            torch.save(model.module.state_dict(), f'full_model4_par_{epoch+1}.pth')
+        
+        # Synchronize after each epoch
+        dist.barrier()
 
     if rank == 0:
         # Plot the training losses
@@ -82,13 +84,13 @@ def train(rank, world_size):
         plt.title('Training Loss Over Epochs')
         plt.legend()
         plt.grid(True)
-        plt.savefig('training_loss_random_crop.png')
+        plt.savefig('model4_par_training_loss.png')
         plt.close()
 
     cleanup()
 
 def main():
-    world_size = 3  # Number of GPUs
+    world_size = 2  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":
