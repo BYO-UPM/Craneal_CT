@@ -61,7 +61,6 @@ class CATScansDataset(Dataset):
 
         if self.transform:
             normal = transforms.Normalize(mean=0, std=(1 / 255))
-            #original_image = self.transform(original_image)
 
             numpy_image = cv2.imread(original_path, cv2.IMREAD_GRAYSCALE)
             clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))  # Create CLAHE object

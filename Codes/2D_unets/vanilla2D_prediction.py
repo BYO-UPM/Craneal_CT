@@ -1,6 +1,4 @@
-#from dataloaders.ct_aug_dataloader import (
-#from dataloaders.ct_window_dataloader import (
-from dataloaders.ct_only_1_window_dataloader import (
+from dataloaders.ct_randomcrop_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
@@ -29,7 +27,7 @@ path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
 transform = transforms.Compose(
     [
         transforms.ToTensor(),
-        transforms.Normalize(mean=0, std=(1 / 255)),
+        #transforms.Normalize(mean=0, std=(1 / 255)),
     ]
 )
 
@@ -79,10 +77,10 @@ for cv_indx in range(len(unique_patient_id)):
     test_dataset = [x for x in full_dataset if x[2] in test_patients]
     
     # Instantiate the CustomAugmentation class
-    custom_augmentation = CustomAugmentation()
+    #custom_augmentation = CustomAugmentation()
     
-    print("Applying the augmentation to the train dataset")
-    train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
+    #print("Applying the augmentation to the train dataset")
+    #train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -101,7 +99,7 @@ for cv_indx in range(len(unique_patient_id)):
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Training loop
-    num_epochs = 40
+    num_epochs = 50
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
@@ -159,12 +157,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"vanilla2D_window6_cv_{cv_indx}.pth"
+                modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/2D_vanilla_e1_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"loss_vanilla2D_window6_cv_{cv_indx}.csv"
+    filename = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/loss_vanilla_2D_e1_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])

@@ -17,11 +17,11 @@ filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/zww"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e1/vgg16/cv1"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
-    transforms.ToTensor(),  # Converts PIL Image to tensor and scales to [0, 1]
+    transforms.ToTensor(),
     #transforms.Normalize(mean=0, std=(1 / 255)),
 ])
 
@@ -45,7 +45,7 @@ device = torch.device("cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/vgg2D_unified_randomcrop_cv_0.pth"
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/2D_vgg_e1_cv_0.pth"
 #model.load_state_dict(torch.load(modelname))
 state_dict = torch.load(modelname)
 
@@ -73,7 +73,7 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P01_predict_{inx_s}.png"
+        output_name = f"P01_vgg_cv1_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')
