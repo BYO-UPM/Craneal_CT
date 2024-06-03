@@ -2,10 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 # Helper function to enable loss function to be flexibly used for
 # both 2D or 3D image segmentation - source: https://github.com/frankkramer-lab/MIScnn
-
 
 def identify_axis(shape):
     # Three dimensional

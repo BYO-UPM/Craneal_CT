@@ -80,7 +80,7 @@ def train(rank, world_size):
         # Loss and optimizer
         dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
         focal_loss = FocalLossForProbabilities()
-        aufl = AsymmetricUnifiedFocalLoss(from_logits=False)
+        aufl = AsymmetricUnifiedFocalLoss(from_logits=True)
         optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
         # Training loop

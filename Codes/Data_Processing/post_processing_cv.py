@@ -44,8 +44,17 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 path_manual = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
-path = sorted(os.listdir(path_manual))
-path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3/vgg16"
+#path = sorted(os.listdir(path_manual))
+path = ['S090899',
+ 'S090934',
+ 'S090946',
+ 'S090947',
+ 'S090957',
+ 'S090967',
+ 'S090977',
+ 'S090979',
+ 'S090981']
+path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_e3_AUFL_DA_cv"
 
 transform = transforms.Compose([
     transforms.ToTensor()

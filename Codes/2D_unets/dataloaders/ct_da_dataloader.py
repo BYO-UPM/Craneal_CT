@@ -14,6 +14,7 @@ from torchvision.transforms import (
     GaussianBlur,
 )
 
+# Dataloader for fix training set
 class CATScansDataset(Dataset):
     def __init__(self, root_dir, transform=None, augmentations=None):
         """
@@ -84,6 +85,72 @@ class CATScansDataset(Dataset):
         )
 
 
+# Dataloader for subset 3 (random CT scans)
+class RandomScansDataset(Dataset):
+    def __init__(self, root_dir, patient_idx, transform=None, augmentations=None):
+
+        self.root_dir = root_dir
+        self.transform = transform
+        self.augmentations = augmentations
+        self.samples = []
+        self.patient_idx = patient_idx
+
+        # Walk through the root directory and create a list of (image, mask) pairs
+        for patient_id in patient_idx:
+            patient_dir = os.path.join(root_dir, patient_id)
+
+            original_dir = os.path.join(patient_dir, "Original")
+            mask_dir = os.path.join(patient_dir, "Pseudo Labels1") # Fold 1, 2, 3, 4
+
+            # Use walk to avoid .ds_store fles
+            for root, _, files in os.walk(original_dir):
+                for original_file in files:
+                    if original_file.endswith(".png"):
+                        slice_number = original_file.split("_")[
+                            -1
+                        ]  # Assuming file format is consistent
+                        mask_file = original_file.split("_")[0] + "_pseudo_" + slice_number
+                        self.samples.append(
+                            (
+                                os.path.join(original_dir, original_file),
+                                os.path.join(mask_dir, mask_file),
+                                patient_id,
+                                slice_number,
+                            )
+                        )
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        original_path, mask_path, patient_id, slice_number = self.samples[idx]
+        mask_image = Image.open(mask_path).convert("L")
+
+        if self.transform:
+            normal = transforms.Normalize(mean=0, std=(1 / 255))
+            numpy_image = cv2.imread(original_path, cv2.IMREAD_GRAYSCALE)
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))  # Create CLAHE object
+            equalized_image = clahe.apply(numpy_image)  # Apply CLAHE
+            original_image = self.transform(equalized_image) / 255
+            original_image = normal(original_image)
+            
+            mask_image = self.transform(mask_image) / 255
+            mask_image = normal(mask_image)
+            # Binarise the mask
+            mask_image = (mask_image > 0.5).float()
+
+        if self.augmentations:
+            original_image, mask_image = self.augmentations(original_image, mask_image)
+
+        return (
+            original_image,
+            mask_image,
+            patient_id,
+            slice_number,
+        )
+
+
+
 # Create data augmentation and transformation pipeline
 class CustomAugmentation:
     def __init__(self):
@@ -95,7 +162,7 @@ class CustomAugmentation:
         self.noise_Poisson_aug = PoissonNoise()
         self.gaussian_blur = GaussianBlur(kernel_size=(15, 15), sigma=(2.0, 3.0))
         self.circleCrop = circleCrop(radius=150)
-        self.randomKeepSquare = randomCrop(square_size=180, triangle_size=150, circle_size=100)
+        self.randomCrop = randomCrop(square_size=180, triangle_size=150, circle_size=100)
         self.window1 = windowSetup(window_center=330, window_width=350)
         self.window2 = windowSetup(window_center=-30, window_width=30)
         self.window3 = windowSetup(window_center=-100, window_width=900)
@@ -138,7 +205,7 @@ class CustomAugmentation:
         circle_mask = self.circleCrop(mask)
         augmented_masks.append(circle_mask)
         
-        randomt_image, randomt_mask = self.randomKeepSquare(image, mask)
+        randomt_image, randomt_mask = self.randomCrop(image, mask)
         augmented_images.append(randomt_image)
         augmented_masks.append(randomt_mask)
 
@@ -390,7 +457,7 @@ class AugmentedDataset(torch.utils.data.Dataset):
         self.augmentation = augmentation
     
     def __len__(self):
-        # 4 images augmentation + 6 windows + blur + circleCrop + randomKeepSquare
+        # 4 images augmentation + 6 windows + blur + circleCrop + randomCrop
         return len(self.subset) * 38 
  
     def __getitem__(self, index):

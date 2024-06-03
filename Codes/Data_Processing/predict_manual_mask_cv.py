@@ -2,7 +2,7 @@ from ct_test_dataloader import CATScansDataset
 from matplotlib import pyplot as plt
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from unet2d_vanilla import VanillaUNet2D
+#from unet2d_vanilla import VanillaUNet2D
 import torch
 import segmentation_models_pytorch as smp
 import os
@@ -14,19 +14,26 @@ def extract_last_number(filename):
 
 # Input path
 path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
-path = sorted(os.listdir(path))
+#path = sorted(os.listdir(path))
+path = ['S090899',
+ 'S090934',
+ 'S090946',
+ 'S090947',
+ 'S090957',
+ 'S090967',
+ 'S090977',
+ 'S090979',
+ 'S090981']
 
 for i in range(len(path)):
-
     input = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed/{path[i]}/Original"
     
     # Ouput path
-    output_path = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3/AUFLVGG/cv{i+1}"
+    output_path = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_e3_AUFL_DA_cv/cv{i+1}"
 
     # Define a transformation pipeline including the preprocessing function
     transform = transforms.Compose([
         transforms.ToTensor(),
-        #transforms.Normalize(mean=0, std=(1 / 255)),
     ])
 
     # Initialize CATScansDataset with the root directory and transformations
@@ -45,11 +52,13 @@ for i in range(len(path)):
         in_channels=1,
     )
 
-    device = torch.device("cpu")
+    #device = torch.device("cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
         
     # Load the best model
-    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/AUFL/2D_vgg_e1_cv_{i}.pth"
+    
+    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e123_models2D/AUFL/DA_cv/vgg2D_unified_randomcrop_cv_{i}.pth"
     state_dict = torch.load(modelname)
     
     # delete "module." 
