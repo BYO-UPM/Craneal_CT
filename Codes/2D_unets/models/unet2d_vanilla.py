@@ -10,14 +10,14 @@ class VanillaUNet2D(nn.Module):
         self.IMG_HEIGHT = IMG_HEIGHT
         self.IMG_WIDTH = IMG_WIDTH
 
-        # Contraction path
+        # Contraction path (encoder)
         self.down_conv_1 = self.conv_block(IMG_CHANNELS, 16, dropout=0.1)
         self.down_conv_2 = self.conv_block(16, 32, dropout=0.1)
         self.down_conv_3 = self.conv_block(32, 64, dropout=0.2)
         self.down_conv_4 = self.conv_block(64, 128, dropout=0.2)
         self.bottom_conv = self.conv_block(128, 256, dropout=0.3)
 
-        # Expansive path
+        # Expansive path (decoder)
         self.up_trans_1 = self.up_trans_block(256, 128)
         self.up_conv_1 = self.conv_block(256, 128, dropout=0.2)
         self.up_trans_2 = self.up_trans_block(128, 64)

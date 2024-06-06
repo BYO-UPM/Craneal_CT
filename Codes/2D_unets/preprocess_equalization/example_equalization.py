@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import os
 
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed/S090967/Original"
+path = "/home/Craneal_CT/CAT_scans_Preprocessed/P01/Original"
 for file in os.listdir(path):
     if file.endswith(".png"):
         image_path = os.path.join(path, file)

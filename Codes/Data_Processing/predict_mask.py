@@ -22,7 +22,6 @@ output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e1/vgg16/cv1
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
     transforms.ToTensor(),
-    #transforms.Normalize(mean=0, std=(1 / 255)),
 ])
 
 # Initialize CATScansDataset with the root directory and transformations

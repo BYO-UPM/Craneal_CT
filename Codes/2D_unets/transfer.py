@@ -5,12 +5,13 @@ import torch.multiprocessing as mp
 import torch.optim as optim
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torchvision import transforms
-from torch.utils.data import DataLoader, DistributedSampler, ConcatDataset
+from torch.utils.data import DataLoader, DistributedSampler
 from segmentation_models_pytorch import Unet
-from dataloaders.ct_da_dataloader import CATScansDataset, CustomAugmentation, AugmentedDataset, RandomScansDataset
-from losses.losses import AsymmetricUnifiedFocalLoss
+import segmentation_models_pytorch as smp
+from dataloaders.ct_da_dataloader import CATScansDataset, CustomAugmentation, AugmentedDataset
+from losses.losses import FocalLossForProbabilities, AsymmetricUnifiedFocalLoss
+import matplotlib.pyplot as plt
 from tqdm import tqdm
-import random
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -28,14 +29,24 @@ def train(rank, world_size):
         transforms.ToTensor()
     ])
     full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed", transform=transform)
-    random_data_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Subset3"
     custom_augmentation = CustomAugmentation()
     train_dataset = AugmentedDataset(full_dataset, custom_augmentation)
-    
+    train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank)
+    train_loader = DataLoader(train_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
+
     # Model setup
     model = Unet(encoder_name='vgg16', encoder_weights='imagenet', classes=1, activation='sigmoid', in_channels=1)
     model = model.to(rank)
     model = DDP(model, device_ids=[rank])
+
+    # load the model
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_5.pth"
+    state_dict = torch.load(path_model)
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        new_key = "module." + key
+        new_state_dict[new_key] = value
+    model.load_state_dict(new_state_dict)
 
     # Loss and optimizer
     #dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
@@ -46,17 +57,8 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 7
+    num_epochs = 1
     for epoch in tqdm(range(num_epochs)):
-
-        random_subset3 = random.sample(os.listdir(random_data_path), 12)
-        random_dataset = RandomScansDataset(root_dir=random_data_path, patient_idx=random_subset3, transform=transform)
-        random_DA_dataset = AugmentedDataset(random_dataset, custom_augmentation)
-
-        combined_dataset = ConcatDataset([train_dataset, random_DA_dataset])
-        train_sampler = DistributedSampler(combined_dataset, num_replicas=world_size, rank=rank)
-        train_loader = DataLoader(train_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
-        
         model.train()
         running_loss = 0.0
         for data in train_loader:
@@ -76,7 +78,8 @@ def train(rank, world_size):
 
         if rank == 0:
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold1_16/semi_fullset/e7_fold1_{epoch+1}.pth')
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_6.pth')
+            #torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_{epoch+1}.pth')
         
         # Synchronize after each epoch
         dist.barrier()

@@ -2,23 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Helper function to enable loss function to be flexibly used for
-# both 2D or 3D image segmentation - source: https://github.com/frankkramer-lab/MIScnn
-
-def identify_axis(shape):
-    # Three dimensional
-    if len(shape) == 5:
-        return [2, 3, 4]
-
-    # Two dimensional
-    elif len(shape) == 4:
-        return [2, 3]
-
-    # Exception - Unknown
-    else:
-        raise ValueError("Metric: Shape of tensor is neither 2D or 3D.")
-
-
 class FocalLossForProbabilities(torch.nn.Module):
     def __init__(self, gamma=2.0, alpha=0.25):
         super(FocalLossForProbabilities, self).__init__()
@@ -34,7 +17,24 @@ class FocalLossForProbabilities(torch.nn.Module):
         pt = torch.where(targets == 1, probabilities, 1 - probabilities)
         loss = -self.alpha * (1 - pt) ** self.gamma * torch.log(pt)
         return loss.mean()
+    
 
+# Helper function to enable loss function to be flexibly used for
+# both 2D or 3D image segmentation - source: https://github.com/frankkramer-lab/MIScnn
+
+def identify_axis(shape):
+    # Three dimensional
+    if len(shape) == 5:
+        return [2, 3, 4]
+
+    # Two dimensional
+    elif len(shape) == 4:
+        return [2, 3]
+
+    # Exception - Unknown
+    else:
+        raise ValueError("Metric: Shape of tensor is neither 2D or 3D.")
+    
 
 class SymmetricFocalLoss(nn.Module):
     """

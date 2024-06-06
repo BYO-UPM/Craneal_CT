@@ -8,7 +8,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, DistributedSampler
 from segmentation_models_pytorch import Unet
 import segmentation_models_pytorch as smp
-from dataloaders.ct_randomcrop_dataloader import CATScansDataset, CustomAugmentation, AugmentedDataset
+from dataloaders.ct_da_dataloader import CATScansDataset, CustomAugmentation, AugmentedDataset
 from losses.losses import FocalLossForProbabilities
 from losses.losses import AsymmetricUnifiedFocalLoss
 import matplotlib.pyplot as plt
