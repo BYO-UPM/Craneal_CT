@@ -37,6 +37,15 @@ def train(rank, world_size):
     model = model.to(rank)
     model = DDP(model, device_ids=[rank])
 
+    # load the model
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold1_16/semi/e6_fold1_5.pth"
+    state_dict = torch.load(path_model)
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        new_key = "module." + key
+        new_state_dict[new_key] = value
+    model.load_state_dict(new_state_dict)
+
     # Loss and optimizer
     #dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
     #focal_loss = FocalLossForProbabilities()
@@ -46,7 +55,7 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 7
+    num_epochs = 3
     for epoch in tqdm(range(num_epochs)):
 
         random_subset3 = random.sample(os.listdir(random_data_path), 12)
@@ -55,7 +64,7 @@ def train(rank, world_size):
 
         combined_dataset = ConcatDataset([train_dataset, random_DA_dataset])
         train_sampler = DistributedSampler(combined_dataset, num_replicas=world_size, rank=rank)
-        train_loader = DataLoader(train_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
+        train_loader = DataLoader(combined_dataset, batch_size=64, sampler=train_sampler, shuffle=False)
         
         model.train()
         running_loss = 0.0

@@ -40,7 +40,7 @@ def train(rank, world_size):
     model = DDP(model, device_ids=[rank])
 
     # load the model
-    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_5.pth"
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_7.pth"
     state_dict = torch.load(path_model)
     new_state_dict = {}
     for key, value in state_dict.items():
@@ -57,7 +57,7 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 1
+    num_epochs = 2
     for epoch in tqdm(range(num_epochs)):
         model.train()
         running_loss = 0.0
@@ -77,10 +77,11 @@ def train(rank, world_size):
         train_loss_list.append(epoch_loss)
 
         if rank == 0:
+            md = 8
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_6.pth')
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_{md}.pth')
             #torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_{epoch+1}.pth')
-        
+            md = md+1
         # Synchronize after each epoch
         dist.barrier()
 

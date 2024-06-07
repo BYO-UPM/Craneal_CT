@@ -55,13 +55,13 @@ if '.DS_Store' in original_img:
 path_manual = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/e5_train_30slices/{patient_id}/Mask"
 manual_img = sorted(os.listdir(path_manual), key=extract_last_number)
 manual_img = [file for file in manual_img if file.endswith('.png')]
-path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_5.pth"
-#path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold1_16/semi/e6_fold1_4.pth"
+#path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/sup/exp_5_fold3_4.pth"
+path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_7.pth"
 
-path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup"
-path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup_post"
-#path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi"
-#path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi_post"
+#path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup"
+#path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup_post"
+path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi"
+path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi_post"
 
 transform = transforms.Compose([
     transforms.ToTensor()

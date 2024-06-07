@@ -47,10 +47,10 @@ def extract_last_number(filename):
 
 
 # Paths
-patient_id = "P38"
+patient_id = "P30"
 path_original = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/original_for_pseudo"
 original_img = sorted(os.listdir(path_original), key=extract_last_number)
-path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_5.pth"
+path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold4_38/sup/exp_5_fold4_4.pth"
 
 path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/pseudo"
 path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/pseudo_post"
