@@ -46,9 +46,9 @@ for patient_id in patient_idx:
     original_img = sorted(os.listdir(path_original), key=extract_last_number)
     if '.DS_Store' in original_img:
         original_img.remove('.DS_Store')
-    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_7.pth"
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold4_38/semi/exp_6_fold4_3.pth"
 
-    path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset3/{patient_id}/Pseudo Labels2" # Fold 1, 2, 3, 4
+    path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset3/{patient_id}/Pseudo Labels4" # Fold 1, 2, 3, 4
 
     # Initialize CATScansDataset with the root directory and transformations
     test_dataset = CATScansDataset(root_dir=path_original, transform=transform)

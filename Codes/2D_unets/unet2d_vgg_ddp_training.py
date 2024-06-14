@@ -48,7 +48,7 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 7
+    num_epochs = 5
     for epoch in tqdm(range(num_epochs)):
         model.train()
         running_loss = 0.0
@@ -70,7 +70,7 @@ def train(rank, world_size):
         if rank == 0:
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
             #torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/sup/e5_fold2_{epoch+1}.pth')
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_{epoch+1}.pth')
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi/e6_fold3_{epoch+1}.pth')
         
         # Synchronize after each epoch
         dist.barrier()

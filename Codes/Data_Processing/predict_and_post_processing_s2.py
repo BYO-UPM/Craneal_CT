@@ -47,7 +47,7 @@ def extract_last_number(filename):
 
 
 # Paths
-patient_id = "P13"
+patient_id = "P38"
 path_original = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/e5_train_30slices/{patient_id}/Original"
 original_img = sorted(os.listdir(path_original), key=extract_last_number)
 if '.DS_Store' in original_img:
@@ -55,13 +55,14 @@ if '.DS_Store' in original_img:
 path_manual = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/e5_train_30slices/{patient_id}/Mask"
 manual_img = sorted(os.listdir(path_manual), key=extract_last_number)
 manual_img = [file for file in manual_img if file.endswith('.png')]
-#path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/sup/exp_5_fold3_4.pth"
-path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_7.pth"
+path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold4_38/semi_fullset/exp_7_fold4_1.pth"
 
 #path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup"
 #path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e5_sup_post"
-path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi"
-path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi_post"
+#path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi"
+#path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e6_semi_post"
+path_output = f"//home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e7_fullsemi"
+path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/result_e7_fullsemi_post"
 
 transform = transforms.Compose([
     transforms.ToTensor()
@@ -80,6 +81,7 @@ model = smp.Unet(
     in_channels=1,
 )
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 model.to(device)
 
 # load the model

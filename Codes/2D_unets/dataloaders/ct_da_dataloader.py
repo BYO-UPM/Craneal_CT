@@ -100,7 +100,7 @@ class RandomScansDataset(Dataset):
             patient_dir = os.path.join(root_dir, patient_id)
 
             original_dir = os.path.join(patient_dir, "Original")
-            mask_dir = os.path.join(patient_dir, "Pseudo Labels1") # Fold 1, 2, 3, 4
+            mask_dir = os.path.join(patient_dir, "Pseudo Labels3") # Fold 1, 2, 3, 4
 
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):
