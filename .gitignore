@@ -6,6 +6,8 @@
 *.dcm
 .DS_Store
 
+/CAT_scans_Preprocessed/
+
 MedSAM
 dataset2
 medSAM_test
