@@ -1,15 +1,6 @@
-# Development of an algorithm to segment the skull structure using Deep Learning
+# Automatic semantic segmentation of the osseous structures of the paranasal sinuses
 
-## Yichun Sun
-
-## Tutor: Juan Ignacio Godino Llorente
-
-
-This is the repository for the final Master thesis work. 
-
-Universidad Politécnica de Madrid
-
-Msc. of Science in Signal Theory and Communications
+xxxxx
 
 ### Contents
 
@@ -17,13 +8,13 @@ CAT_scans_Original: Full CAT scans in DICOM files
 
 CAT_scans_Preprocessed: Slices selected with manual masks in PNG files
 
-Codes: 2D & 3D U-Nets, their variants (with backbone ResNet50, VGG16)
+Codes: 2D & 3D U-Nets, their variants (with backbone ResNet50 and VGG16)
 
-### Development Environment (important)
+### Development Environment
 
-Python version: 3.10.12
+Python version: 3.10.13
 
-For 2D architectures: TensorFlow > 2.14, Keras > 2.14, Segmentation-models 1.0.1
+For 2D architectures: PyTorch 2.2.1, Segmentation-models-pytorch 0.3.3
 
 For 3D architectures: TensorFlow == 2.8, Keras == 2.8, Keras_applications 1.0.8, Segmentation-models-3D 1.0.8
 
