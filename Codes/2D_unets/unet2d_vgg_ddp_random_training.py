@@ -38,7 +38,7 @@ def train(rank, world_size):
     model = DDP(model, device_ids=[rank])
 
     # load the model
-    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_1.pth"
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_2.pth"
     state_dict = torch.load(path_model)
     new_state_dict = {}
     for key, value in state_dict.items():
@@ -85,7 +85,7 @@ def train(rank, world_size):
 
         if rank == 0:
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_{epoch+2}.pth')
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_{epoch+1}.pth')
         
         # Synchronize after each epoch
         dist.barrier()

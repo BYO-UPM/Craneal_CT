@@ -54,7 +54,7 @@ path = ['S090899',
  'S090977',
  'S090979',
  'S090981']
-path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_e3_AUFL_DA_cv"
+path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3/AUFLVGG"
 
 transform = transforms.Compose([
     transforms.ToTensor()
