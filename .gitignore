@@ -4,12 +4,18 @@
 *.log
 *.png
 *.dcm
+*.out
+*.npz
+*.pkl
+*.json
+.bashrc
 .DS_Store
 
 MedSAM
 dataset2
 medSAM_test
 models
+nnUNet
 new_test_CT/P30/original/.DS_Store
 new_test_CT/P30/.DS_Store
 new_test_CT/P16/.DS_Store

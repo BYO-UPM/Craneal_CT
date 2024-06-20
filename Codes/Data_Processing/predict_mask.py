@@ -12,12 +12,12 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed/S090899/Original"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/nnUNet/nnunet_data/nnUNet_raw/Dataset250_Skull_2024/imagesTs"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e1/vgg16/cv1"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/ffff"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -44,7 +44,7 @@ device = torch.device("cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/2D_vgg_e1_cv_0.pth"
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/nnUNet/nnunet_data/nnUNet_results/Dataset250_Skull_2024/nnUNetTrainer__nnUNetPlans__2d/fold_0/checkpoint_best.pth"
 #model.load_state_dict(torch.load(modelname))
 state_dict = torch.load(modelname)
 
@@ -72,7 +72,7 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P01_vgg_cv1_{inx_s}.png"
+        output_name = f"P01_nnunet_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')

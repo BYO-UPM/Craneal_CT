@@ -29,7 +29,7 @@ for i in range(len(path)):
     input = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed/{path[i]}/Original"
     
     # Ouput path
-    output_path = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_e3_AUFL_DA_cv/cv{i+1}"
+    output_path = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3/AUFLVGG/cv{i+1}"
 
     # Define a transformation pipeline including the preprocessing function
     transform = transforms.Compose([
@@ -58,7 +58,7 @@ for i in range(len(path)):
         
     # Load the best model
     
-    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e123_models2D/AUFL/DA_cv/vgg2D_unified_randomcrop_cv_{i}.pth"
+    modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e123_models2D/AUFL/2D_vgg_e1_cv_{i}.pth"
     state_dict = torch.load(modelname)
     
     # delete "module." 
