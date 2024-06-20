@@ -14,6 +14,7 @@ Endoscopic sinus and skull base surgeries require the use of precise neuronaviga
 - [Available models](#available-models)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
+- [References](references)
 
 ## Installation
 
@@ -28,17 +29,6 @@ Endoscopic sinus and skull base surgeries require the use of precise neuronaviga
 
   (Note: After the updating in Dec. 2023, CUDA 12.2 doesn't support TensorFlow and Keras 2.8 anymore, the codes can run but GPU not working. There are two methods to train the 3D architectures with GPU in this case: (1) Use `apt update && apt install cuda-11-8` to get previous CUDA version; (2) In Google Colab: Use Colab’s fallback runtime version by selecting "Use fallback runtime version" command when connecting to a runtime from the Command Palette.)
 
-
-For 2D architectures: PyTorch 2.2.1, Segmentation-models-pytorch 0.3.3
-
-For 3D architectures: TensorFlow == 2.8, Keras == 2.8, Keras_applications 1.0.8, Segmentation-models-3D 1.0.8
-
-After the updating in Dec. 2023, CUDA 12.2 doesn't support TensorFlow and Keras 2.8 anymore, the codes can run but GPU not working. There are two methods to train the 3D architectures with GPU in this case:
-
-(1) Use `apt update && apt install cuda-11-8` to get previous CUDA version
-
-(2) In Google Colab: Use Colab’s fallback runtime version by selecting "Use fallback runtime version" command when connecting to a runtime from the Command Palette.
-
 ### Setup
 To set up the codes, run the following commands:
 ```bash
@@ -48,10 +38,11 @@ cd Craneal_CT
 
 ## Dataset
 
-
+The two datasets (internal and external datasets) used in our [paper](https://github.com/BYO-UPM/Craneal_CT) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/preprocess.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
 
 ## Available models
 
+All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with nnUNet [1] and UNETR (UNet Transformer) [2] models. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
 
 ## Contributing
 Contributions are welcome! Please follow the standard fork-and-pull request workflow on GitHub.
@@ -70,6 +61,11 @@ If you use our model or dataset in your research, please cite our paper:
 ```
 ## Acknowledgments
 This research was funded by an agreement between Comunidad de Madrid (Consejería de Educación, Universidades, Ciencia y Portavocía) and Universidad Politécnica de Madrid, to finance research actions on SARS-CoV-2 and COVID-19 disease with the REACT-UE resources of the European Regional Development Funds. This work was also supported by the Ministry of Economy and Competitiveness of Spain under Grants PID2021-128469OB-I00 and TED2021-131688B-I00, and by Comunidad de Madrid, Spain. Universidad Politécnica de Madrid supports J. D. Arias-Londoño through a María Zambrano grant, 2022. The authors also thank the Madrid ELLIS unit (European Laboratory for Learning & Intelligent Systems) for its indirect support.
+
+## References
+[1] Isensee F., Wald T., et al. nnU-Net Revisited: A Call for Rigorous Validation in 3D Medical Image Segmentation. arXiv preprint arXiv:2404.09556. (2024).
+
+[2] M. Jorge Cardoso, Wenqi Li, et al. MONAI: An open-source framework for deep learning in healthcare. arXiv:2211.02701v1. (2022).
 
 
 
