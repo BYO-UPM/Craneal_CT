@@ -1,9 +1,9 @@
 # Automatic semantic segmentation of the osseous structures of the paranasal sinuses
 This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://github.com/BYO-UPM/Craneal_CT). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
 
-![Figures/originalct.gif](https://github.com/BYO-UPM/Craneal_CT/blob/main/Figures/originalct.gif)
-
-![Figures/maskct.gif](https://github.com/BYO-UPM/Craneal_CT/blob/main/Figures/maskct.gif)
+<div align="center">
+    <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Figures/example.gif" width="50%" alt="Segmentation Example">
+</div>
 
 ## Overview
 
