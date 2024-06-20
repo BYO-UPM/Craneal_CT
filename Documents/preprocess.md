@@ -1,6 +1,25 @@
+# Dataset storage structure
+
+The internal and external datasets are stored in the `Dataset` folder according to the following structure. 
+- The labeled data from internal dataset is Subset 1
+- The labeled data from external dataset is Subset 2
+- The unlabeled data is Subset 3
+
 ```bash
 Dataset/
-├── Labeled Data in PNG
+├── Data DICOM
+│   ├── External Dataset
+│   │   ├── P13
+│   │   │   ├── Corte_Dicom_01.DCM
+│   │   │   ├── Corte_Dicom_02.DCM
+│   │   │   ├── ...
+│   │   ├── P14
+│   │   ├── ...
+│   ├── Internal Dataset
+│   │   ├── P01
+│   │   ├── P02
+│   │   ├── ...
+├── Labeled Data PNG
 │   ├── External Dataset
 │   │   ├── P13
 │   │   │   ├── Manual Mask
@@ -29,13 +48,12 @@ Dataset/
 │   │   │   │   ├── ...
 │   │   ├── P02
 │   │   ├── ...
-├── Labeled Data in PNG
-
-
-
-│   └── dataset.json
-├── Dataset002_Heart
-│   ├── imagesTr
-│   │   ├── image_0000.nii.gz
-│   │   ├── image_0001.nii.gz
+├── Unlabeled Data PNG
+│   ├── P10
+│   │   │   ├── img01.png
+│   │   │   ├── img02.png
+│   │   │   ├── ...
+│   ├── P11
+│   ├── P14
+│   ├── ...
 ```
