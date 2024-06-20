@@ -1,6 +1,40 @@
 # Automatic semantic segmentation of the osseous structures of the paranasal sinuses
+This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://github.com/BYO-UPM/Craneal_CT). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
 
-xxxxx
+![Figures/originalct.gif](https://github.com/BYO-UPM/Craneal_CT/blob/main/Figures/originalct.gif)
+
+![Figures/maskct.gif](https://github.com/BYO-UPM/Craneal_CT/blob/main/Figures/maskct.gif)
+
+## Overview
+
+## Installation
+
+### Requirements
+- Python 3.8+
+- PyTorch 1.8+
+- NumPy
+- Other dependencies are listed in the `requirements.txt`
+
+### Setup
+To set up the software, run the following commands:
+bash
+git clone https://github.com/BYO-UPM/Craneal_CT
+cd Craneal_CT
+pip install -r requirements.txt
+
+
+## Citation
+If you use our model or dataset in your research, please cite our paper:
+@article{yichun2024automatic,
+  title={Automatic Semantic Segmentation of the Osseous Structures of the Paranasal Sinuses},
+  author={Yichun Sun, Alejandro Guerrero-López, Julián D. Arias-Londoño, Juan I. Godino-Llorente},
+  journal={xxx},
+  year={2024},
+  volume={XX},
+  number={XX},
+  pages={xx-xx}
+}
+
 
 ### Contents
 
