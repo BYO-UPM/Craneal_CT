@@ -44,7 +44,7 @@ Note: Be careful with the `.DS_Store` files stored in the directory contents! Ad
 
 ## Available models
 
-All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with nnUNetV2 [1], UNETR (UNet Transformer) [2] and U-Mamba [3] models. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
+All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with many SOTA medical image segmentation models such as nnUNetV2 [1], UNETR (UNet Transformer) [2] and U-Mamba [3], etc. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
 
 ## Contributing
 Contributions are welcome! Please follow the standard fork-and-pull request workflow on GitHub.
