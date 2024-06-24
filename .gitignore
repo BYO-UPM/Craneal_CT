@@ -2,8 +2,6 @@
 *.csv
 *.pth 
 *.log
-*.png
-*.dcm
 *.out
 *.npz
 *.pkl
@@ -17,6 +15,15 @@ dataset2
 medSAM_test
 models
 nnUNet
+*.DICOM
+*.dcm
 new_test_CT/P30/original/.DS_Store
 new_test_CT/P30/.DS_Store
 new_test_CT/P16/.DS_Store
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_e3_AUFL_DA_cv
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_nnunet
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e1
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/HL_results_e56_subset2
+/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Data DICOM
