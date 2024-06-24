@@ -10,7 +10,7 @@ The final model was obtained by training the true labels of Subsets 1 & 2, and a
 
 ## 2D Models
 
-See our [paper](https://github.com/BYO-UPM/Craneal_CT) for specific experimental setups.
+You can use these models for **reproduction**. See our [paper](https://github.com/BYO-UPM/Craneal_CT) for specific experimental setups.
 
 - Folder `AUFL` (models using Asymmetric Unified Focal Loss)
 
