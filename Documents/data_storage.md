@@ -30,10 +30,6 @@ Dataset/
 │   │   │   │   ├── P13_original_083.png
 │   │   │   │   ├── P13_original_085.png
 │   │   │   │   ├── ...
-│   │   │   ├── Original_default_window
-│   │   │   │   ├── img_083.png
-│   │   │   │   ├── img_085.png
-│   │   │   │   ├── ...
 │   │   ├── P16
 │   │   ├── ...
 │   ├── Internal Dataset
@@ -54,6 +50,7 @@ Dataset/
 │   │   │   ├── img02.png
 │   │   │   ├── ...
 │   ├── P11
+│   ├── P12
 │   ├── P14
 │   ├── ...
 ```
