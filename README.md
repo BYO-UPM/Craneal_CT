@@ -44,7 +44,7 @@ Note: Be careful with the `.DS_Store` files stored in the directory contents! Ad
 
 ## Available models
 
-All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with nnUNet [1] and UNETR (UNet Transformer) [2] models. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
+All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with nnUNetV2 [1], UNETR (UNet Transformer) [2] and U-Mamba [3] models. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
 
 ## Contributing
 Contributions are welcome! Please follow the standard fork-and-pull request workflow on GitHub.
@@ -68,6 +68,8 @@ This research was funded by an agreement between Comunidad de Madrid (Consejerí
 [1] Isensee F., Wald T., et al. nnU-Net Revisited: A Call for Rigorous Validation in 3D Medical Image Segmentation. arXiv preprint arXiv:2404.09556. (2024).
 
 [2] M. Jorge Cardoso, Wenqi Li, et al. MONAI: An open-source framework for deep learning in healthcare. arXiv:2211.02701v1. (2022).
+
+[3] J. Ma, F. Li, et al. U-Mamba: Enhancing Long-range Dependency for Biomedical Image Segmentation. arXiv:2401.04722. (2024).
 
 
 
