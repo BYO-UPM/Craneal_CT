@@ -1,9 +1,12 @@
 # Dataset storage structure
 
 The internal and external datasets are stored in the `Dataset` folder according to the following structure. 
-- The labeled data from internal dataset is Subset 1
-- The labeled data from external dataset is Subset 2
-- The unlabeled data is Subset 3
+
+- The labeled data from the internal dataset is referred to as **Subset 1**.
+- The labeled data from the external dataset is referred to as **Subset 2**.
+- The unlabeled data is referred to as **Subset 3**.
+
+Please refer to [data information](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf) for more details.
 
 ```bash
 Dataset/

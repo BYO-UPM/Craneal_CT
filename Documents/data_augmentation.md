@@ -15,6 +15,10 @@ We applied 5 types of data augmentation techniques to expand the dataset, they w
 - Intensity operations
   
   Change the intensity information of the original CT images with six new windows
+
+<div align="center">
+    <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/new_window.png" width="60%" alt="New Windows">
+</div>
   
 - Geometric transformations
 
