@@ -89,7 +89,7 @@ def train(rank, world_size):
     cleanup()
 
 def main():
-    world_size = 2  # Number of GPUs
+    world_size = 4  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":

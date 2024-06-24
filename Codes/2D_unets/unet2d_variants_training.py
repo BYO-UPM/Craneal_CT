@@ -1,4 +1,4 @@
-from dataloaders.ct_randomcrop_dataloader import (
+from dataloaders.ct_da_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
@@ -23,8 +23,7 @@ path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
-    transforms.ToTensor(),  # Converts PIL Image to tensor and scales to [0, 1]
-    #transforms.Normalize(mean=0, std=(1 / 255)),
+    transforms.ToTensor(),
 ])
 
 # Initialize CATScansDataset with the root directory and transformations
@@ -32,7 +31,6 @@ full_dataset = CATScansDataset(root_dir=path, transform=transform)
 
 # Check two images
 #original_image, mask_image, patient_id, slice_number = full_dataset[0]
-# Plot them
 #fig, ax = plt.subplots(1, 2, figsize=(10, 5))
 #ax[0].imshow(original_image[0], cmap="gray")
 #ax[0].set_title("Original Image")
@@ -68,8 +66,6 @@ for cv_indx in range(len(unique_patient_id)):
     
     # Instantiate the CustomAugmentation class
     #custom_augmentation = CustomAugmentation()
-    
-    #print("Applying the augmentation to the train dataset")
     #train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
@@ -90,17 +86,14 @@ for cv_indx in range(len(unique_patient_id)):
         in_channels=1,
     )
 
-    # Training loop
-
-    # Loss and optimizer
-    # Dice loss and focal loss
+    # Optimizer and loss function
     dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
     focal_loss = FocalLossForProbabilities()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Training loop
     num_epochs = 40
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 

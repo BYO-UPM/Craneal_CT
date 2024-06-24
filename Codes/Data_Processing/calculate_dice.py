@@ -20,7 +20,7 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 
-path_groundtruth = "./Craneal_CT/CAT_scans_Preprocessed/S090981/Mask"
+path_groundtruth = "./Craneal_CT/CAT_scans_Preprocessed/P01/Mask"
 path_prediction = "./Craneal_CT/result_e3_AUFL_DA_cv/cv9"
 
 # Order the files

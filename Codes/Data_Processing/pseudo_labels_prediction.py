@@ -14,32 +14,6 @@ import cc3d
 from scipy.ndimage import binary_fill_holes
 
 
-def remove_floating_objects(volume):
-    # Generate a binary structure for 3D connectivity (26-connected)
-    struct = generate_binary_structure(3, 3)
-
-    # Label connected components
-    labeled_volume, num_features = label(volume, structure=struct)
-
-    # Find the largest connected component
-    component_sizes = np.bincount(labeled_volume.ravel())
-    largest_component_label = component_sizes[1:].argmax() + 1
-
-    # Create a mask for the largest connected component
-    largest_component = labeled_volume == largest_component_label
-
-    return largest_component
-
-
-# DICE
-def dice_coefficient(y_true, y_pred):
-    intersection = np.sum(y_true * y_pred)
-    union = np.sum(y_true) + np.sum(y_pred)
-
-    dice = (2.0 * intersection) / (union + 1e-8)
-    return dice
-
-
 # Extract last number from a string
 def extract_last_number(filename):
     matches = re.findall(r"\d+", filename)
@@ -50,7 +24,7 @@ def extract_last_number(filename):
 patient_id = "P30"
 path_original = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/original_for_pseudo"
 original_img = sorted(os.listdir(path_original), key=extract_last_number)
-path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold4_38/sup/exp_5_fold4_4.pth"
+path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold4_38/sup/exp_5_fold4.pth"
 
 path_output = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/pseudo"
 path_output_post = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2/test/{patient_id}/pseudo_post"

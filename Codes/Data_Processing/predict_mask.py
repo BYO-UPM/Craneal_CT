@@ -12,12 +12,12 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/nnUNet/nnunet_data/nnUNet_raw/Dataset250_Skull_2024/imagesTs"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Image"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/ffff"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/fold"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -40,12 +40,11 @@ model = smp.Unet(
     in_channels=1,
 )
 
-device = torch.device("cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/nnUNet/nnunet_data/nnUNet_results/Dataset250_Skull_2024/nnUNetTrainer__nnUNetPlans__2d/fold_0/checkpoint_best.pth"
-#model.load_state_dict(torch.load(modelname))
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/model.pth"
 state_dict = torch.load(modelname)
 
 # delete "module." 
@@ -72,18 +71,8 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P01_nnunet_{inx_s}.png"
+        output_name = f"P01_predict_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')
         plt.close() 
-
-# Check two images
-#original_image, mask_image, patient_id, slice_number = full_dataset[0]
-# Plot them
-#fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-#ax[0].imshow(original_image[0], cmap="gray")
-#ax[0].set_title("Original Image")
-#ax[1].imshow(mask_image[0], cmap="gray")
-#ax[1].set_title("Mask Image")
-#plt.show()

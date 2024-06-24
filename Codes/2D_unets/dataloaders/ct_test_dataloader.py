@@ -1,7 +1,6 @@
 import os
 from torch.utils.data import Dataset
 from torchvision import transforms
-import torch
 import cv2
 
 class CATScansDataset(Dataset):

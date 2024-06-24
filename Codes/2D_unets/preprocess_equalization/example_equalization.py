@@ -2,6 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import os
 
+# Show an example of the equalization process
 path = "/home/Craneal_CT/CAT_scans_Preprocessed/P01/Original"
 for file in os.listdir(path):
     if file.endswith(".png"):

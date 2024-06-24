@@ -1,4 +1,4 @@
-from dataloaders.ct_randomcrop_dataloader import (
+from dataloaders.ct_da_dataloader import (
     CATScansDataset,
     CustomAugmentation,
     AugmentedDataset,
@@ -34,16 +34,6 @@ transform = transforms.Compose(
 # Initialize CATScansDataset with the root directory and transformations
 full_dataset = CATScansDataset(root_dir=path, transform=transform)
 
-# Check two images
-#original_image, mask_image, patient_id, slice_number = full_dataset[0]
-# Plot them
-#fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-#ax[0].imshow(original_image[0], cmap="gray")
-#ax[0].set_title("Original Image")
-#ax[1].imshow(mask_image[0], cmap="gray")
-#ax[1].set_title("Mask Image")
-#plt.show()
-
 # Patient id list
 patient_id = full_dataset.patient_id
 unique_patient_id = list(set(patient_id))
@@ -55,12 +45,6 @@ cv_DICE = []
 
 # 7 patients to train, 1 to val and 1 to test
 for cv_indx in range(len(unique_patient_id)):
-    #random.seed(42)
-    #random.shuffle(unique_patient_id)
-    #train_patients = unique_patient_id[:7]
-    #val_patients = unique_patient_id[7:8]
-    #test_patients = unique_patient_id[8:]
-
     # Test set
     test_patients = [unique_patient_id[cv_indx]]
     
@@ -78,8 +62,6 @@ for cv_indx in range(len(unique_patient_id)):
     
     # Instantiate the CustomAugmentation class
     #custom_augmentation = CustomAugmentation()
-    
-    #print("Applying the augmentation to the train dataset")
     #train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
@@ -90,10 +72,7 @@ for cv_indx in range(len(unique_patient_id)):
     # Instantiate the model
     model = VanillaUNet2D(1, 512, 512)
 
-    # Training loop
-
-    # Loss and optimizer
-    # Dice loss and focal loss
+    # Optimizer and loss function
     dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=True)
     focal_loss = smp.losses.FocalLoss(mode="binary")
     optimizer = optim.Adam(model.parameters(), lr=0.0001)

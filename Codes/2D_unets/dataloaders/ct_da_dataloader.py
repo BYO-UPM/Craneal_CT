@@ -100,7 +100,7 @@ class RandomScansDataset(Dataset):
             patient_dir = os.path.join(root_dir, patient_id)
 
             original_dir = os.path.join(patient_dir, "Original")
-            mask_dir = os.path.join(patient_dir, "Pseudo Labels3") # Fold 1, 2, 3, 4
+            mask_dir = os.path.join(patient_dir, "Pseudo Labels1") # Fold 1, 2, 3, 4
 
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):
@@ -148,7 +148,6 @@ class RandomScansDataset(Dataset):
             patient_id,
             slice_number,
         )
-
 
 
 # Create data augmentation and transformation pipeline
@@ -247,16 +246,7 @@ class CustomAugmentation:
     
 
 class ScaleX:
-    # Default scaling factor set to decrease width by 15%
-    #def __init__(self, scale_factor=0.85):
-    #    self.scale_factor = scale_factor
-
     def __call__(self, image):
-        #scale_factor = random.uniform(*self.scale_range)
-        #_, w, h = image.size()
-        #scaled_w = int(w * 0.85)
-        #resized_img = image.resize((scaled_w, h), Image.BILINEAR)
-        #return resized_img
 
         _, H, W = image.size()
         scaled_W = int(W * 0.85)
@@ -297,24 +287,6 @@ class circleCrop:
         resized_image = resized_image.squeeze(0)  # Remove the batch dimension
         
         return resized_image
-
-
-#class randomKeepSquare:
-#    def __init__(self, square_size):
-#        self.square_size = square_size
-#
-#    def __call__(self, image, mask):
-#        # Crop the image to a square with random size
-#        _, w, h = image.size()
-#        x = random.randint(0, w - self.square_size)
-#        y = random.randint(0, h - self.square_size)
-#
-#        canva = torch.zeros((w, h))
-#        canva[x:x+self.square_size, y:y+self.square_size] = 1
-#
-#        new_image = image * canva
-#        new_mask = mask * canva
-#        return new_image, new_mask
 
 
 class randomCrop:

@@ -28,7 +28,7 @@ def train(rank, world_size):
     transform = transforms.Compose([
         transforms.ToTensor()
     ])
-    full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed", transform=transform)
+    full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CT_scans_Preprocessed", transform=transform)
     custom_augmentation = CustomAugmentation()
     train_dataset = AugmentedDataset(full_dataset, custom_augmentation)
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank)
@@ -40,7 +40,7 @@ def train(rank, world_size):
     model = DDP(model, device_ids=[rank])
 
     # load the model
-    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi/e6_fold3_5.pth"
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/final_model/final.pth"
     state_dict = torch.load(path_model)
     new_state_dict = {}
     for key, value in state_dict.items():
@@ -57,7 +57,7 @@ def train(rank, world_size):
     # Training loop
     train_loss_list = []
 
-    num_epochs = 3
+    num_epochs = 10  # Depend on dataset
     for epoch in tqdm(range(num_epochs)):
         model.train()
         running_loss = 0.0
@@ -77,18 +77,15 @@ def train(rank, world_size):
         train_loss_list.append(epoch_loss)
 
         if rank == 0:
-            md = 6
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi/e6_fold3_{md}.pth')
-            #torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold2_13/semi/e6_fold2_{epoch+1}.pth')
-            md = md+1
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/new/transfer_model_{epoch}.pth')
         # Synchronize after each epoch
         dist.barrier()
 
     cleanup()
 
 def main():
-    world_size = 2  # Number of GPUs
+    world_size = 4  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":

@@ -38,7 +38,7 @@ def train(rank, world_size):
     model = DDP(model, device_ids=[rank])
 
     # load the model
-    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_2.pth"
+    path_model = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e6_fold3.pth"
     state_dict = torch.load(path_model)
     new_state_dict = {}
     for key, value in state_dict.items():
@@ -47,15 +47,13 @@ def train(rank, world_size):
     model.load_state_dict(new_state_dict)
 
     # Loss and optimizer
-    #dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
-    #focal_loss = FocalLossForProbabilities()
     aufl = AsymmetricUnifiedFocalLoss(from_logits=True)
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Training loop
     train_loss_list = []
 
-    num_epochs = 2
+    num_epochs = 4
     for epoch in tqdm(range(num_epochs)):
 
         random_subset3 = random.sample(os.listdir(random_data_path), 12)
@@ -85,7 +83,7 @@ def train(rank, world_size):
 
         if rank == 0:
             print(f"Epoch {epoch + 1}, loss: {epoch_loss}")
-            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_{epoch+1}.pth')
+            torch.save(model.module.state_dict(), f'/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/e567_AUFLmodels/fold3_30/semi_fullset/e7_fold3_{epoch}.pth')
         
         # Synchronize after each epoch
         dist.barrier()
@@ -104,7 +102,7 @@ def train(rank, world_size):
     cleanup()
 
 def main():
-    world_size = 2  # Number of GPUs
+    world_size = 4  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":

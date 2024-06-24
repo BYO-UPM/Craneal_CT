@@ -30,14 +30,12 @@ def train(rank, world_size):
     # Transform and dataset setup
     transform = transforms.Compose([
         transforms.ToTensor()
-        #transforms.Normalize(mean=0, std=(1 / 255)),
     ])
     full_dataset = CATScansDataset(root_dir="/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed", transform=transform)
     
     patient_id = full_dataset.patient_id
     unique_patient_id = list(set(patient_id))
     unique_patient_id.sort()
-    #print(f"Number of unique patients: {len(unique_patient_id)}")
 
     # Set-up for cross-validation
     cv_DICE = []
@@ -187,7 +185,7 @@ def train(rank, world_size):
     cleanup()
 
 def main():
-    world_size = 2  # Number of GPUs
+    world_size = 4  # Number of GPUs
     mp.spawn(train, args=(world_size,), nprocs=world_size, join=True)
 
 if __name__ == "__main__":
