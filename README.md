@@ -38,7 +38,9 @@ cd Craneal_CT
 
 ## Dataset
 
-The two datasets (internal and external datasets) used in our [paper](https://github.com/BYO-UPM/Craneal_CT) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/preprocess.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
+The two datasets (internal and external datasets) used in our [paper](https://github.com/BYO-UPM/Craneal_CT) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_storage.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
+
+Note: Be careful with the `.DS_Store` files stored in the directory contents! Add codes to filter out them.
 
 ## Available models
 
