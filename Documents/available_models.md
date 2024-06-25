@@ -1,6 +1,6 @@
 # Available Models
 
-Due to the file size limitation in GitHub, please view our available models at this [link](https://drive.google.com/drive/folders/19Clgax8sH59DEnHt1XK6PBL_eQEiHX_S?usp=sharing).
+Due to the file size limitation in GitHub, please view our available models at this [link](https://huggingface.co/adayc/skull_segmentation).
 
 ## Final Model
 
@@ -30,6 +30,11 @@ You can use these models for **reproduction**. See our [paper](https://github.co
 
 ## 3D Models
 
-The corresponding 3D models can be obtained by running these [codes](https://github.com/BYO-UPM/Craneal_CT/tree/main/Codes/3D_unets) for training, and due to the large total size of the 3D models (more than 15 GB), they are not available for direct download.
+Before using the 3D models for reproduction, please check the [codes](https://github.com/BYO-UPM/Craneal_CT/blob/main/Codes/3D_unets/3D_data_preprocess.ipynb) to stack the 2D CT images into 3D volume. All 3D models were obtained in Experiment 2 (see our [paper](https://github.com/BYO-UPM/Craneal_CT)) with cross-validation, using the Hybrid Loss. 
 
+3D U-Net architectures with different encoders:
+
+- Folder `vanilla`
+- Folder `vgg16`
+- Folder `resnet50`
 
