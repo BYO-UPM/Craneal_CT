@@ -16,7 +16,9 @@ dataset2
 medSAM_test
 models
 nnUNet
+U-Mamba
 
+=1.2.0
 new_test_CT/P30/original/.DS_Store
 new_test_CT/P30/.DS_Store
 new_test_CT/P16/.DS_Store
@@ -26,3 +28,5 @@ results_e1
 results_e3
 subset2
 HL_results_e56_subset2
+result_mamba
+tifvolume
