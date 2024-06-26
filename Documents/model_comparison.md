@@ -6,7 +6,7 @@ Our model is compared with nnUNet version 2 (nnUNetv2) [1], UNETR [2], SwinUNETR
 
 |           | Our model   |  nnUNetV2  |   UNETR    |  SwinUNETR  |   U-Mamba_Bot   |   U-Mamba_Enc   |
 |:---------:|:-----------:|:----------:|:----------:|:-----------:|:-----------:|:-----------:|
-| DICE Score| 91.73±1.7   | 91.99±2.0  |    ±       |     ±       |     ±       |    ±       |
+| DICE Score| 91.73±1.7   | 91.99±2.0  |    ±       |     ±       |  93.10±2.1  |  92.82±2.3   |
 
 ## References
 
