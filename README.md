@@ -1,5 +1,5 @@
 # Automatic semantic segmentation of the osseous structures of the paranasal sinuses
-This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://github.com/BYO-UPM/Craneal_CT). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
+This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://doi.org/10.1101/2024.06.21.599833). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
 
 <div align="center">
     <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/seg_example.gif" width="80%" alt="Segmentation Example">
@@ -13,6 +13,7 @@ Endoscopic sinus and skull base surgeries require the use of precise neuronaviga
 - [Dataset](#dataset)
 - [Available models](#available-models)
 - [Contributing](#contributing)
+- [License](#license)
 - [Acknowledgments](#acknowledgments)
 - [References](references)
 
@@ -38,7 +39,7 @@ cd Craneal_CT
 
 ## Dataset
 
-The two datasets (internal and external datasets) used in our [paper](https://github.com/BYO-UPM/Craneal_CT) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_storage.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
+The two datasets (internal and external datasets) used in our [paper](https://doi.org/10.1101/2024.06.21.599833) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_storage.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
 
 Note: Be careful with the `.DS_Store` files stored in the directory contents! Add codes to filter out them.
 
@@ -54,13 +55,14 @@ If you use our model or dataset in your research, please cite our paper:
 @article{yichun2024automatic,
   title={Automatic Semantic Segmentation of the Osseous Structures of the Paranasal Sinuses},
   author={Yichun Sun, Alejandro Guerrero-López, Julián D. Arias-Londoño, Juan I. Godino-Llorente},
-  journal={xxx},
+  journal={bioRxiv 2024.06.21.599833},
   year={2024},
-  volume={XX},
-  number={XX},
-  pages={xx-xx}
 }
 ```
+
+## License
+This project is licensed under the [MIT License](https://github.com/BYO-UPM/Craneal_CT/blob/main/LICENSE). Please see the LICENSE file for more details.
+
 ## Acknowledgments
 This research was funded by an agreement between Comunidad de Madrid (Consejería de Educación, Universidades, Ciencia y Portavocía) and Universidad Politécnica de Madrid, to finance research actions on SARS-CoV-2 and COVID-19 disease with the REACT-UE resources of the European Regional Development Funds. This work was also supported by the Ministry of Economy and Competitiveness of Spain under Grants PID2021-128469OB-I00 and TED2021-131688B-I00, and by Comunidad de Madrid, Spain. Universidad Politécnica de Madrid supports J. D. Arias-Londoño through a María Zambrano grant, 2022. The authors also thank the Madrid ELLIS unit (European Laboratory for Learning & Intelligent Systems) for its indirect support.
 
