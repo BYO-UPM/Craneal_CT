@@ -45,7 +45,7 @@ Note: Be careful with the `.DS_Store` files stored in the directory contents! Ad
 
 ## Available models
 
-All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with many SOTA medical image segmentation models such as nnUNetV2 [1], UNETR (UNet Transformer) [2] and U-Mamba [3], etc. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
+All models available for reproduction or transfer learning have been uploaded. Please refer to this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/available_models.md) for detailed information. We compared our model with many SOTA medical image segmentation models such as nnUNet version 2 (nnUNetv2) [1], UNETR [2], SwinUNETR [3], U-Mamba [4] and U-KAN [5]. The results can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/model_comparison.md).
 
 ## Contributing
 Contributions are welcome! Please follow the standard fork-and-pull request workflow on GitHub.
@@ -71,7 +71,11 @@ This research was funded by an agreement between Comunidad de Madrid (Consejerí
 
 [2] M. Jorge Cardoso, Wenqi Li, et al. MONAI: An open-source framework for deep learning in healthcare. arXiv:2211.02701v1. (2022).
 
-[3] J. Ma, F. Li, et al. U-Mamba: Enhancing Long-range Dependency for Biomedical Image Segmentation. arXiv:2401.04722. (2024).
+[3] A. Hatamizadeh, V. Nath Swin, et al. UNETR: Swin Transformers for Semantic Segmentation of Brain Tumors in MRI Images. arXiv:2201.01266. (2022).
+
+[4] J. Ma, F. Li, et al. U-Mamba: Enhancing Long-range Dependency for Biomedical Image Segmentation. arXiv:2401.04722. (2024).
+
+[5] C. Li, X. Liu, et al. U-KAN Makes Strong Backbone for Medical Image Segmentation and Generation. arXiv:2406.02918. (2024).
 
 
 
