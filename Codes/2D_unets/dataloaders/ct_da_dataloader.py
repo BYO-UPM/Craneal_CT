@@ -32,8 +32,8 @@ class CATScansDataset(Dataset):
         for patient_id in sorted(os.listdir(root_dir)):
             patient_dir = os.path.join(root_dir, patient_id)
 
-            original_dir = os.path.join(patient_dir, "Original")
-            mask_dir = os.path.join(patient_dir, "Mask")
+            original_dir = os.path.join(patient_dir, "Original CT")
+            mask_dir = os.path.join(patient_dir, "Manual Mask")
 
             # Use walk to avoid .ds_store fles
             for root, _, files in os.walk(original_dir):

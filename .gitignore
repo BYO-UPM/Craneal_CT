@@ -7,6 +7,7 @@
 *.pkl
 *.png
 *.json
+*.tif
 .bashrc
 .DS_Store
 
@@ -30,3 +31,6 @@ subset2
 HL_results_e56_subset2
 result_mamba
 tifvolume
+Codes/2D_unets/dsu.py
+Codes/2D_unets/da_png.py
+mamba_commands.sh
