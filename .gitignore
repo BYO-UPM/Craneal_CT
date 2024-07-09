@@ -18,6 +18,7 @@ medSAM_test
 models
 nnUNet
 U-Mamba
+mamba
 
 =1.2.0
 new_test_CT/P30/original/.DS_Store
