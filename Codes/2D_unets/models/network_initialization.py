@@ -1,3 +1,6 @@
+''' 
+    Source code from: https://github.com/MIC-DKFZ/nnUNet/blob/master/nnunetv2/utilities/network_initialization.py
+'''
 from torch import nn
 
 class InitWeights_He(object):
