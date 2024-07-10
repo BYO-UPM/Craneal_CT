@@ -20,8 +20,8 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 
-path_groundtruth = "./Craneal_CT/CAT_scans_Preprocessed/P01/Mask"
-path_prediction = "./Craneal_CT/result_e3_AUFL_DA_cv/cv9"
+path_groundtruth = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Labeled Data PNG/Internal Dataset/P01/Manual Mask"
+path_prediction = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/fordelete"
 
 # Order the files
 pred_mask = os.listdir(path_prediction)

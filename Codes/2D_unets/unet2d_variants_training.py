@@ -19,7 +19,7 @@ from losses.losses import AsymmetricUnifiedFocalLoss
 
 
 # Path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Labeled Data PNG/Internal Dataset"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -65,8 +65,8 @@ for cv_indx in range(len(unique_patient_id)):
     test_dataset = [x for x in full_dataset if x[2] in test_patients]
     
     # Instantiate the CustomAugmentation class
-    custom_augmentation = CustomAugmentation()
-    train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
+    # custom_augmentation = CustomAugmentation()
+    # train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -89,11 +89,12 @@ for cv_indx in range(len(unique_patient_id)):
     # Optimizer and loss function
     dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
     focal_loss = FocalLossForProbabilities()
+    bce_loss = smp.losses.SoftBCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Training loop
-    num_epochs = 40
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    num_epochs = 60
+    device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
@@ -111,10 +112,11 @@ for cv_indx in range(len(unique_patient_id)):
 
             # Forward + backward + optimize
             mask_prediction = model(inputs)
-            #diceloss = dice_loss(mask_prediction, masks)
+            diceloss = dice_loss(mask_prediction, masks)
             #focalloss = focal_loss(mask_prediction, masks)
-            #loss = diceloss + focalloss
-            loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
+            bceloss = bce_loss(mask_prediction, masks)
+            loss = diceloss + bceloss
+            #loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
             loss.backward()
             optimizer.step()
 
@@ -132,10 +134,11 @@ for cv_indx in range(len(unique_patient_id)):
 
             # Forward
             mask_prediction = model(inputs)
-            #diceloss = dice_loss(mask_prediction, masks)
+            diceloss = dice_loss(mask_prediction, masks)
             #focalloss = focal_loss(mask_prediction, masks)
-            #loss = diceloss + focalloss
-            loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
+            bceloss = bce_loss(mask_prediction, masks)
+            loss = diceloss + bceloss
+            #loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction, masks)
 
             # Print statistics
             running_loss += loss.item()
@@ -150,12 +153,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/AUFL/2D_vgg_e1_cv_{cv_indx}.pth"
+                modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/bces1all/vgg_bce_cv_{cv_indx}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/models2D/AUFL/loss_vgg_2D_e1_cv_{cv_indx}.csv"
+    filename = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/bces1all/v_vgg_bce_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])

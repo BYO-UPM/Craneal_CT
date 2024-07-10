@@ -43,24 +43,14 @@ def extract_last_number(filename):
     matches = re.findall(r"\d+", filename)
     return int(matches[-1]) if matches else 0
 
-path_manual = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/CAT_scans_Preprocessed"
+path_manual = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Labeled Data PNG/Internal Dataset"
 #path = sorted(os.listdir(path_manual))
-path = ['S090899',
- 'S090934',
- 'S090946',
- 'S090947',
- 'S090957',
- 'S090967',
- 'S090977',
- 'S090979',
- 'S090981']
-path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/results_e3/AUFLVGG"
+path = ['P01','P02','P03','P04','P05','P06','P07','P08','P09']
+path_pre = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/bces1all/predictions"
 
 transform = transforms.Compose([
     transforms.ToTensor()
 ])
-
-encoder = "vgg16"
 
 mean_dice_ori = []
 mean_dice_post = []
@@ -70,7 +60,7 @@ for i in range(1, 10):
     real_imgs = []
     pred_imgs = []
     
-    fold_mask = f"{path_manual}/{path[i-1]}/Mask"
+    fold_mask = f"{path_manual}/{path[i-1]}/Manual Mask"
     p_prediction = f"{path_pre}/cv{i}"
     fold_prediction = sorted(os.listdir(p_prediction), key=extract_last_number)
 
@@ -113,11 +103,11 @@ for i in range(1, 10):
         )
     mean_dice_post.append(np.mean(dice_scores_2d_clean_holes))
 
-    print(f"CV{i}: DICE of using {encoder} encoder without post-processing:", np.mean(dice_scores_2d))
-    print(f"       DICE of using {encoder} encoder post-processing (dust):", np.mean(dice_scores_2d_clean))
-    print(f"       DICE of using {encoder} encoder post-processing (fill holes):", np.mean(dice_scores_2d_clean_holes))
+    print(f"CV{i}: DICE without post-processing:", np.mean(dice_scores_2d))
+    # print(f"       DICE post-processing (dust):", np.mean(dice_scores_2d_clean))
+    # print(f"       DICE post-processing (fill holes):", np.mean(dice_scores_2d_clean_holes))
 
-print(f"Mean DICE of using {encoder} encoder without post-processing:", np.mean(mean_dice_ori))
+print(f"Mean DICE without post-processing:", np.mean(mean_dice_ori))
 print("no, std", np.std(mean_dice_ori))
-print(f"Mean DICE of using {encoder} encoder post-processing:", np.mean(mean_dice_post))
+print(f"Mean DICE post-processing:", np.mean(mean_dice_post))
 print("post, std", np.std(mean_dice_post))

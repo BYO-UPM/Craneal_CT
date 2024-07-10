@@ -12,12 +12,12 @@ def extract_last_number(filename):
     return int(matches[-1]) if matches else 0
 
 # Input path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Image"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Labeled Data PNG/Internal Dataset/P09/Original CT"
 filenames = [f for f in sorted(os.listdir(path)) if f.endswith('.png')]
 filenames = sorted(filenames, key=extract_last_number)
 
 # Ouput path
-output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/fold"
+output_path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/bces1all/predictions/cv9"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -40,11 +40,11 @@ model = smp.Unet(
     in_channels=1,
 )
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 model.to(device)
     
 # Load the best model
-modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Codes/model.pth"
+modelname = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/bces1all/vgg_bce_cv_8.pth"
 state_dict = torch.load(modelname)
 
 # delete "module." 
@@ -71,7 +71,7 @@ for i, data in enumerate(test_loader):
     mask_prediction = mask_prediction > 0.5
 
     for j in range(mask_prediction.shape[0]):
-        output_name = f"P01_predict_{inx_s}.png"
+        output_name = f"P09_predict_{inx_s}.png"
         inx_s = inx_s+1
         output_p = os.path.join(output_path, output_name)
         plt.imsave(output_p, mask_prediction[j,0,:,:], cmap='gray', format='png')
