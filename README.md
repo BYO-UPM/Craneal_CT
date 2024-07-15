@@ -30,9 +30,13 @@ Endoscopic sinus and skull base surgeries require the use of precise neuronaviga
 
   (Note: After the updating in Dec. 2023, CUDA 12.2 doesn't support TensorFlow and Keras 2.8 anymore, the codes can run but GPU not working. There are two methods to train the 3D architectures with GPU in this case: (1) Use `apt update && apt install cuda-11-8` to get previous CUDA version; (2) In Google Colab: Use Colab’s fallback runtime version by selecting "Use fallback runtime version" command when connecting to a runtime from the Command Palette.)
 
-- For U-Mamba (out of nnU-Net):
+- For U-Mamba (out of nnU-Net framework):
 
   Use `conda env create -f umamba.yml` to create the enviornment.
+
+- For nnU-Net framework:
+
+  Check corresponding [repository](https://github.com/MIC-DKFZ/nnUNet).
 
 ### Setup
 To set up the codes, run the following commands:
