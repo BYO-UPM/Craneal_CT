@@ -73,7 +73,7 @@ This research was funded by an agreement between Comunidad de Madrid (Consejerí
 ## References
 [1] Isensee F., Wald T., et al. nnU-Net Revisited: A Call for Rigorous Validation in 3D Medical Image Segmentation. arXiv preprint arXiv:2404.09556. (2024).
 
-[2] M. Jorge Cardoso, Wenqi Li, et al. MONAI: An open-source framework for deep learning in healthcare. arXiv:2211.02701v1. (2022).
+[2] A. Hatamizadeh, Y. Tang, et al. UNETR: Transformers for 3D Medical Image Segmentation. arXiv:2103.10504. (2021).
 
 [3] A. Hatamizadeh, V. Nath Swin, et al. UNETR: Swin Transformers for Semantic Segmentation of Brain Tumors in MRI Images. arXiv:2201.01266. (2022).
 
