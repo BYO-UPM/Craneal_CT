@@ -17,6 +17,7 @@ from tqdm import tqdm
 import csv
 from losses.losses import AsymmetricUnifiedFocalLoss
 from models.UMambaBot_2d import UMambaBot
+from models.UMambaEnc_2d import UMambaEnc
 from models.network_initialization import InitWeights_He
 
 # Path
@@ -65,7 +66,30 @@ for cv_indx in range(len(unique_patient_id)):
     val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 
-    model = UMambaBot(
+    # U-Mamba Bot
+    # model = UMambaBot(
+    #     input_channels = 1,
+    #     n_stages = 7,
+    #     features_per_stage = [32, 64, 128, 256, 512, 512, 512],
+    #     conv_op = nn.Conv2d,
+    #     kernel_sizes = [[3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]],
+    #     strides = [[1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],
+    #     n_conv_per_stage = [2, 2, 2, 2, 2, 2, 2],
+    #     num_classes = 2,
+    #     n_conv_per_stage_decoder = [2, 2, 2, 2, 2, 2],
+    #     conv_bias = True,
+    #     norm_op = nn.InstanceNorm2d,
+    #     norm_op_kwargs = {'eps': 1e-5, 'affine': True},
+    #     dropout_op = None,
+    #     dropout_op_kwargs = None,
+    #     nonlin = nn.LeakyReLU,
+    #     nonlin_kwargs = {'inplace': True},
+    #     deep_supervision = False,
+    # )
+
+    # U-Mamba Enc
+    model = UMambaEnc(
+        input_size = [512, 448],
         input_channels = 1,
         n_stages = 7,
         features_per_stage = [32, 64, 128, 256, 512, 512, 512],
@@ -82,17 +106,17 @@ for cv_indx in range(len(unique_patient_id)):
         dropout_op_kwargs = None,
         nonlin = nn.LeakyReLU,
         nonlin_kwargs = {'inplace': True},
-        deep_supervision = False,
+        deep_supervision = False
     )
     model.apply(InitWeights_He(1e-2))
 
     # Optimizer and loss function
     dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
     focal_loss = FocalLossForProbabilities()
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.1)
 
     # Training loop
-    num_epochs = 60
+    num_epochs = 20
     device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
 
     model.to(device)

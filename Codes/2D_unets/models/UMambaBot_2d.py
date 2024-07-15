@@ -12,7 +12,6 @@ import torch
 print(torch.__version__)
 import numpy as np
 import math
-import torch
 from torch import nn
 from torch.nn import functional as F
 from typing import Union, Type, List, Tuple
@@ -20,10 +19,6 @@ from typing import Union, Type, List, Tuple
 from torch.nn.modules.conv import _ConvNd
 from torch.nn.modules.dropout import _DropoutNd
 from dynamic_network_architectures.building_blocks.helper import convert_conv_op_to_dim
-
-from nnunetv2.utilities.plans_handling.plans_handler import ConfigurationManager, PlansManager
-from dynamic_network_architectures.building_blocks.helper import get_matching_instancenorm, convert_dim_to_conv_op
-from nnunetv2.utilities.network_initialization import InitWeights_He
 from mamba_ssm import Mamba
 from dynamic_network_architectures.building_blocks.helper import maybe_convert_scalar_to_list, get_matching_pool_op
 from torch.cuda.amp import autocast
