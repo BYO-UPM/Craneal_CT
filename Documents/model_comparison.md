@@ -10,7 +10,7 @@ Building on the original experiments described in our [paper](https://www.biorxi
 
 ## Results
 
-The comparison results are displayed in the [figure](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_comparison.png) below. For detailed experimental settings, please refer to our [paper](https://www.biorxiv.org/content/10.1101/2024.06.21.599833v1).
+The comparison results are displayed in the [figure](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_comparison.png) below, all results were obtained after completing post-processing. For detailed experimental settings, please refer to our [paper](https://www.biorxiv.org/content/10.1101/2024.06.21.599833v1).
 
 <div align="center">
     <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_comparison.png" width="100%" alt="results">
