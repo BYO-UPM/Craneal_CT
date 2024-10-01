@@ -83,6 +83,45 @@ class CATScansDataset(Dataset):
             patient_id,
             slice_number,
         )
+    
+    def remove_patients(self, patient_id):
+        # Remove from the dataset all samples from the specified patient
+        indices = [i for i, p_id in enumerate(self.patient_id) if p_id in patient_id]
+        for index in sorted(indices, reverse=True):
+            del self.samples[index]
+            del self.patient_id[index]
+
+        return self
+    
+    def add_patient(self, patient_id, root_dir):
+        # Add to the current dataset all samples from the specified patient
+        for patient in patient_id:
+            patient_dir = os.path.join(root_dir, patient)
+
+            original_dir = os.path.join(patient_dir, "Original CT")
+            mask_dir = os.path.join(patient_dir, "Manual Mask")
+
+            # Use walk to avoid .ds_store fles
+            for root, _, files in os.walk(original_dir):
+                for original_file in files:
+                    if original_file.endswith(".png"):
+                        slice_number = original_file.split("_")[
+                            -1
+                        ]
+                        mask_file = original_file.split("_")[0] + "_mask_" + slice_number
+                        self.samples.append(
+                            (
+                                os.path.join(original_dir, original_file),
+                                os.path.join(mask_dir, mask_file),
+                                patient,
+                                slice_number,
+                            )
+                        )
+            self.patient_id.append(patient)
+
+        return self
+
+
 
 
 # Dataloader for subset 3 (random CT scans)

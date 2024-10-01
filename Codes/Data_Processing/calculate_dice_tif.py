@@ -18,7 +18,7 @@ def dice_score(image1_path, image2_path):
     dice = 2 * intersection / union
     return dice
 
-image1_path = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/tifvolume/mask/09.tif'
-image2_path = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_com_final/fold9/tr/09.tif'
+image1_path = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/tifvolume/mask/06.tif'
+image2_path = '/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/result_com_final/fold6/swintr/06.tif'
 score = dice_score(image1_path, image2_path)
 print(f'Dice Score: {score}')

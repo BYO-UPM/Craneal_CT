@@ -3,6 +3,7 @@ from dataloaders.ct_da_dataloader import (
     CustomAugmentation,
     AugmentedDataset,
 )
+import sys
 from matplotlib import pyplot as plt
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -19,9 +20,38 @@ from losses.losses import AsymmetricUnifiedFocalLoss
 from models.UMambaBot_2d import UMambaBot
 from models.UMambaEnc_2d import UMambaEnc
 from models.network_initialization import InitWeights_He
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Train and evaluate a model for CT scans')
+parser.add_argument('--log_file', type=str, required=True, help='Path to the log file', default='./modeltest/enc_mamba_P38.txt')
+parser.add_argument('--model_type', type=str, required=True, choices=['MambaEnc', 'MambaBot'], help='Model type to use')
+parser.add_argument('--gpu', type=int, required=True, help='GPU index to use')
+
+args = parser.parse_args()
+
+class Logger(object):
+    def __init__(self, logfile):
+        self.terminal = sys.stdout
+        self.log = open(logfile, 'a')
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
+
+sys.stdout = Logger(args.log_file)
+sys.stderr = Logger(args.log_file)
+
+# Set GPU device
+torch.cuda.set_device(args.gpu)
+
+
 
 # Path
-path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/Dataset/Labeled Data PNG/Internal Dataset"
+path = "/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/subset2"
 
 # Define a transformation pipeline including the preprocessing function
 transform = transforms.Compose([
@@ -30,6 +60,7 @@ transform = transforms.Compose([
 
 # Initialize CATScansDataset with the root directory and transformations
 full_dataset = CATScansDataset(root_dir=path, transform=transform)
+
 
 # Patient id list
 patient_id = full_dataset.patient_id
@@ -62,62 +93,66 @@ for cv_indx in range(len(unique_patient_id)):
     train_dataset = AugmentedDataset(train_dataset, custom_augmentation)
     
     # Create the dataloaders
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
 
     # U-Mamba Bot
-    # model = UMambaBot(
-    #     input_channels = 1,
-    #     n_stages = 7,
-    #     features_per_stage = [32, 64, 128, 256, 512, 512, 512],
-    #     conv_op = nn.Conv2d,
-    #     kernel_sizes = [[3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]],
-    #     strides = [[1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],
-    #     n_conv_per_stage = [2, 2, 2, 2, 2, 2, 2],
-    #     num_classes = 2,
-    #     n_conv_per_stage_decoder = [2, 2, 2, 2, 2, 2],
-    #     conv_bias = True,
-    #     norm_op = nn.InstanceNorm2d,
-    #     norm_op_kwargs = {'eps': 1e-5, 'affine': True},
-    #     dropout_op = None,
-    #     dropout_op_kwargs = None,
-    #     nonlin = nn.LeakyReLU,
-    #     nonlin_kwargs = {'inplace': True},
-    #     deep_supervision = False,
-    # )
+    if args.model_type == 'MambaBot':
+        model = UMambaBot(
+            input_channels = 1,
+            n_stages = 7,
+            features_per_stage = [32, 64, 128, 256, 512, 512, 512],
+            conv_op = nn.Conv2d,
+            kernel_sizes = [[3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]],
+            strides = [[1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],
+            n_conv_per_stage = [2, 2, 2, 2, 2, 2, 2],
+            num_classes = 2,
+            n_conv_per_stage_decoder = [2, 2, 2, 2, 2, 2],
+            conv_bias = True,
+            norm_op = nn.InstanceNorm2d,
+            norm_op_kwargs = {'eps': 1e-5, 'affine': True},
+            dropout_op = None,
+            dropout_op_kwargs = None,
+            nonlin = nn.LeakyReLU,
+            nonlin_kwargs = {'inplace': True},
+            deep_supervision = False,
+        )
+    else:
+        # U-Mamba Enc
+        model = UMambaEnc(
+            input_size = [512, 512],
+            input_channels = 1,
+            n_stages = 7,
+            features_per_stage = [32, 64, 128, 256, 512, 512, 512],
+            conv_op = nn.Conv2d,
+            kernel_sizes = [[3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]],
+            strides = [[1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],
+            n_conv_per_stage = [2, 2, 2, 2, 2, 2, 2],
+            num_classes = 2,
+            n_conv_per_stage_decoder = [2, 2, 2, 2, 2, 2],
+            conv_bias = True,
+            norm_op = nn.InstanceNorm2d,
+            norm_op_kwargs = {'eps': 1e-5, 'affine': True},
+            dropout_op = None,
+            dropout_op_kwargs = None,
+            nonlin = nn.LeakyReLU,
+            nonlin_kwargs = {'inplace': True},
+            deep_supervision = False
+        )
 
-    # U-Mamba Enc
-    model = UMambaEnc(
-        input_size = [512, 448],
-        input_channels = 1,
-        n_stages = 7,
-        features_per_stage = [32, 64, 128, 256, 512, 512, 512],
-        conv_op = nn.Conv2d,
-        kernel_sizes = [[3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]],
-        strides = [[1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],
-        n_conv_per_stage = [2, 2, 2, 2, 2, 2, 2],
-        num_classes = 2,
-        n_conv_per_stage_decoder = [2, 2, 2, 2, 2, 2],
-        conv_bias = True,
-        norm_op = nn.InstanceNorm2d,
-        norm_op_kwargs = {'eps': 1e-5, 'affine': True},
-        dropout_op = None,
-        dropout_op_kwargs = None,
-        nonlin = nn.LeakyReLU,
-        nonlin_kwargs = {'inplace': True},
-        deep_supervision = False
-    )
+    # Model init
     model.apply(InitWeights_He(1e-2))
 
     # Optimizer and loss function
     dice_loss = smp.losses.DiceLoss(mode="binary", from_logits=False)
     focal_loss = FocalLossForProbabilities()
+    aufl = AsymmetricUnifiedFocalLoss(from_logits=False)
     optimizer = optim.Adam(model.parameters(), lr=0.1)
 
     # Training loop
     num_epochs = 20
-    device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
+    device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
 
     model.to(device)
 
@@ -138,7 +173,7 @@ for cv_indx in range(len(unique_patient_id)):
             #diceloss = dice_loss(mask_prediction, masks)
             #focalloss = focal_loss(mask_prediction, masks)
             #loss = diceloss + focalloss
-            loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction[:,:1,:,:], masks)
+            loss = aufl(mask_prediction[:,:1,:,:], masks)
             loss.backward()
             optimizer.step()
 
@@ -159,7 +194,7 @@ for cv_indx in range(len(unique_patient_id)):
             #diceloss = dice_loss(mask_prediction, masks)
             #focalloss = focal_loss(mask_prediction, masks)
             #loss = diceloss + focalloss
-            loss = AsymmetricUnifiedFocalLoss(from_logits=True)(mask_prediction[:,:1,:,:], masks)
+            loss = aufl(mask_prediction[:,:1,:,:], masks)
 
             # Print statistics
             running_loss += loss.item()
@@ -174,12 +209,12 @@ for cv_indx in range(len(unique_patient_id)):
             if running_loss / len(val_loader) < best_loss:
                 best_loss = running_loss / len(val_loader)
                 print(f"Best model so far, saving the model at epoch {epoch + 1}")
-                modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/modeltest/mamba_e3_cv_{cv_indx+1}.pth"
+                modelname = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/modeltest/mamba_e5_cv_{cv_indx+1}.pth"
                 torch.save(model.state_dict(), modelname)
     
     # Save information for training and validation losses
     # New csv file
-    filename = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/modeltest/mamba_e3_cv_{cv_indx}.csv"
+    filename = f"/home/ysun@gaps_domain.ssr.upm.es/Craneal_CT/modeltest/mamba_e5_cv_{cv_indx}.csv"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Train Loss'] + [''] * 10 + ['Validation Loss'])

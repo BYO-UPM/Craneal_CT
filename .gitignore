@@ -11,7 +11,7 @@
 .bashrc
 .DS_Store
 
-
+Paranasal_UKAN
 MedSAM
 dataset2
 medSAM_test
@@ -19,6 +19,10 @@ models
 nnUNet
 U-Mamba
 mamba
+result_com_final
+pseudo_mamba
+result_swintrans
+result_transformer
 
 =1.2.0
 new_test_CT/P30/original/.DS_Store
@@ -35,3 +39,5 @@ tifvolume
 Codes/2D_unets/dsu.py
 Codes/2D_unets/da_png.py
 mamba_commands.sh
+
+U-Mamba/data/*
