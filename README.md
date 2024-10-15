@@ -69,7 +69,7 @@ If you use our model or dataset in your research, please cite our paper:
 ```
 
 ## License
-This project is licensed under the [MIT License](https://github.com/BYO-UPM/Craneal_CT/blob/main/LICENSE). Please see the LICENSE file for more details.
+This project is licensed under the [CC-BY-ND-NC License](https://github.com/BYO-UPM/Craneal_CT/blob/main/LICENSE). Please see the LICENSE file for more details.
 
 ## Acknowledgments
 This research was funded by an agreement between Comunidad de Madrid (Consejería de Educación, Universidades, Ciencia y Portavocía) and Universidad Politécnica de Madrid, to finance research actions on SARS-CoV-2 and COVID-19 disease with the REACT-UE resources of the European Regional Development Funds. This work was also supported by the Ministry of Economy and Competitiveness of Spain under Grants PID2021-128469OB-I00 and TED2021-131688B-I00, and by Comunidad de Madrid, Spain. Universidad Politécnica de Madrid supports J. D. Arias-Londoño through a María Zambrano grant, 2022. The authors also thank the Madrid ELLIS unit (European Laboratory for Learning & Intelligent Systems) for its indirect support.
