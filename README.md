@@ -63,8 +63,11 @@ If you use our model or dataset in your research, please cite our paper:
 @article{yichun2024automatic,
   title={Automatic Semantic Segmentation of the Osseous Structures of the Paranasal Sinuses},
   author={Yichun Sun, Alejandro Guerrero-López, Julián D. Arias-Londoño, Juan I. Godino-Llorente},
-  journal={bioRxiv 2024.06.21.599833},
-  year={2024},
+  journal={Computerized Medical Imaging and Graphics},
+  year={2025},
+  volume = {XX},
+  number = {XX},
+  pages = {xx--yy}
 }
 ```
 
