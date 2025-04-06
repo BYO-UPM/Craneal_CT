@@ -65,9 +65,8 @@ If you use our model or dataset in your research, please cite our paper:
   author={Yichun Sun, Alejandro Guerrero-López, Julián D. Arias-Londoño, Juan I. Godino-Llorente},
   journal={Computerized Medical Imaging and Graphics},
   year={2025},
-  volume = {XX},
-  number = {XX},
-  pages = {xx--yy}
+  volume = {123},
+  pages = {102541}
 }
 ```
 
