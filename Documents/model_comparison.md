@@ -6,11 +6,11 @@ Here we compare our model with various state-of-the-art medical image segmentati
 
 None of these new models have been previously tested on datasets related to sinus CT, leaving their performance in segmenting osseous structures near paranasal sinuses unverified. This comparative experiment aims to validate our model's performance on the sinus CT dataset and evaluate the adaptability and accuracy of all these models in specific medical imaging scenarios, offering valuable insights for future research and practical applications.
 
-Building on the original experiments described in our [paper](https://www.biorxiv.org/content/10.1101/2024.06.21.599833v1), we employed the DICE + Focal Loss (Hybrid Loss) and AUFL (Asymmetric Unified Focal loss) from our study, along with the DICE + BCE Loss used in the nnU-Net framework. These experiments allowed us to validate the models' performance and analyze the impact of different loss functions. Additionally, we also validated the impact of different data augmentation (DA) techniques with [our DA techniques](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) and the [nnU-Net framework DA techniques](https://arxiv.org/abs/1904.08128) on model performance.
+Building on the original experiments described in our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541), we employed the DICE + Focal Loss (Hybrid Loss) and AUFL (Asymmetric Unified Focal loss) from our study, along with the DICE + BCE Loss used in the nnU-Net framework. These experiments allowed us to validate the models' performance and analyze the impact of different loss functions. Additionally, we also validated the impact of different data augmentation (DA) techniques with [our DA techniques](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) and the [nnU-Net framework DA techniques](https://arxiv.org/abs/1904.08128) on model performance.
 
 ## Results
 
-The comparison results are displayed in the [figure](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_comparison.png) below, all results were obtained after completing post-processing. For detailed experimental settings, please refer to our [paper](https://www.biorxiv.org/content/10.1101/2024.06.21.599833v1).
+The comparison results are displayed in the [figure](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_comparison.png) below, all results were obtained after completing post-processing. For detailed experimental settings, please refer to our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541).
 
 <div align="center">
     <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/model_com.png" width="100%" alt="results">
