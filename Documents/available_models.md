@@ -10,7 +10,7 @@ The final model was obtained by training the true labels of Subsets 1 & 2, and a
 
 ## 2D Models
 
-You can use these models for **reproduction**. See our [paper](https://doi.org/10.1101/2024.06.21.599833) for specific experimental setups.
+You can use these models for **reproduction**. See our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541) for specific experimental setups.
 
 - Folder `AUFL` (models using Asymmetric Unified Focal Loss)
 
@@ -30,7 +30,7 @@ You can use these models for **reproduction**. See our [paper](https://doi.org/1
 
 ## 3D Models
 
-Before using the 3D models for reproduction, please check the [codes](https://github.com/BYO-UPM/Craneal_CT/blob/main/Codes/3D_unets/3D_data_preprocess.ipynb) to stack the 2D CT images into 3D volume. All 3D models were obtained in Experiment 2 (see our [paper](https://doi.org/10.1101/2024.06.21.599833)) with cross-validation, using the Hybrid Loss. 
+Before using the 3D models for reproduction, please check the [codes](https://github.com/BYO-UPM/Craneal_CT/blob/main/Codes/3D_unets/3D_data_preprocess.ipynb) to stack the 2D CT images into 3D volume. All 3D models were obtained in Experiment 2 (see our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541)) with cross-validation, using the Hybrid Loss. 
 
 3D U-Net architectures with different encoders:
 
