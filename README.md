@@ -1,5 +1,5 @@
 # Automatic semantic segmentation of the osseous structures of the paranasal sinuses
-This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://doi.org/10.1101/2024.06.21.599833). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
+This repository contains the implementation of the automatic semantic segmentation model for the osseous structures of the paranasal sinuses, as described in our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541). The model aims to assist in robotic-assisted surgeries by accurately delimiting critical anatomical structures, using U-Net based architectures enhanced with semi-supervised learning techniques.
 
 <div align="center">
     <img src="https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/Figures/seg_example.gif" width="80%" alt="Segmentation Example">
@@ -47,7 +47,7 @@ cd Craneal_CT
 
 ## Dataset
 
-The two datasets (internal and external datasets) used in our [paper](https://doi.org/10.1101/2024.06.21.599833) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_storage.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
+The two datasets (internal and external datasets) used in our [paper](https://doi.org/10.1016/j.compmedimag.2025.102541) are totally available in this repository. You can view the dataset storage structure [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_storage.md). Detailed information about the datasets and the acquisition of CT images can be found in [here](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/dataset_information.pdf). Additionally, this [document](https://github.com/BYO-UPM/Craneal_CT/blob/main/Documents/data_augmentation.md) provides explanations of the data preprocessing and augmentation processes.
 
 Note: Be careful with the `.DS_Store` files stored in the directory contents! Add codes to filter out them.
 
