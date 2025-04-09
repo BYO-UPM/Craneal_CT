@@ -5,7 +5,7 @@
 *.out
 *.npz
 *.pkl
-*.png
+
 *.json
 *.tif
 .bashrc
