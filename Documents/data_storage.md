@@ -49,11 +49,24 @@ Dataset/
 │   │   ├── ...
 ├── Unlabeled Data PNG
 │   ├── P10
-│   │   │   ├── img01.png
-│   │   │   ├── img02.png
-│   │   │   ├── ...
+│   │   ├── img01.png
+│   │   ├── img02.png
+│   │   ├── ...
 │   ├── P11
 │   ├── P12
 │   ├── P14
+│   ├── ...
+├── Pseudolabeled Data PNG
+│   ├── P10
+│   │   ├── Original CT
+│   │   │   ├── P10_original_087.png
+│   │   │   ├── P10_original_091.png
+│   │   │   ├── ...
+│   │   ├── Pseudo Mask
+│   │   │   ├── P10_pmask_087.png
+│   │   │   ├── P10_pmask_091.png
+│   │   │   ├── ...
+│   ├── P11
+│   ├── P12
 │   ├── ...
 ```
