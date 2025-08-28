@@ -58,7 +58,7 @@ All models available for reproduction or transfer learning have been uploaded. P
 ## Contributing
 Contributions are welcome! Please follow the standard fork-and-pull request workflow on GitHub.
 
-If you use our model or dataset in your research, please cite our paper:
+If you use our model or dataset in your research, please cite our papers:
 ```bash
 @article{yichun2024automatic,
   title={Automatic Semantic Segmentation of the Osseous Structures of the Paranasal Sinuses},
@@ -67,6 +67,14 @@ If you use our model or dataset in your research, please cite our paper:
   year={2025},
   volume = {123},
   pages = {102541}
+}
+@article{yichun2025ct-scope,
+  title={{CT-SCOPE}: annotated dataset of {CT} {SC}ans for the automatic semantic segmentation of the {O}sseous structures of the {P}aranasal sinus{E}s.},
+  author={Yichun Sun, Alejandro Guerrero-López, Julián D. Arias-Londoño, Juan I. Godino-Llorente},
+  journal={Data in Brief},
+  year={2025},
+  volume = {62},
+  pages = {111962}
 }
 ```
 
